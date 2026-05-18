@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Taskesy - INSTAGRAM TASK</title>
+    <title>Taskesy - SMART TASK</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/otpauth/dist/otpauth.umd.min.js"></script>
@@ -21,7 +21,7 @@
         .light-mode .header { background: rgba(255, 255, 255, 0.8); }
         .header h2 { font-size: 1.5rem; font-weight: 800; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* Splash Screen Updates */
+        /* Splash Screen */
         #splash-screen { position: fixed; inset: 0; z-index: 9999; background: var(--primary-gradient); display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; transition: opacity 0.5s; background-size: 200% 200%; animation: gradShift 3s ease infinite; }
         .splash-logo-box { position: relative; display: flex; justify-content: center; align-items: center; width: 150px; height: 150px; margin-bottom: 20px; }
         .splash-ring { position: absolute; inset: 0; border: 4px solid transparent; border-top-color: white; border-bottom-color: white; border-radius: 50%; animation: spin 1.5s linear infinite; }
@@ -32,12 +32,12 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes spinReverse { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
 
-        /* Auth UI Updates */
+        /* Auth UI */
         #login-page { justify-content: center; align-items: center; background: url('https://source.unsplash.com/random/1080x1920/?abstract,dark') center/cover; display: none; flex-direction: column; }
         #login-page.active { display: flex; }
         .login-wrapper { width: 90%; max-width: 400px; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(20px); border-radius: 25px; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 20px 50px rgba(0,0,0,0.5); overflow: hidden; padding: 40px 0; }
         .auth-header { text-align: center; margin-bottom: 25px; padding: 0 25px; }
-        .auth-header img { width: 70px; border-radius: 20px; margin-bottom: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .auth-header img { width: 70px; border-radius: 20px; margin-bottom: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); background: white; padding: 5px; }
         .auth-slider-container { display: flex; width: 200%; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
         .auth-form { width: 50%; padding: 0 25px; display: flex; flex-direction: column; gap: 12px; }
         .google-btn { background: white; color: #000; border: none; padding: 15px; width: 100%; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
@@ -118,7 +118,7 @@
         <div class="splash-logo-box">
             <div class="splash-ring"></div>
             <div class="splash-ring-inner"></div>
-            <div class="splash-logo">Taskesy</div>
+            <div class="splash-logo">WebPro</div>
         </div>
         <p style="font-weight:600; letter-spacing:2px; opacity:0.8;">YOUR SMART CAREER</p>
     </div>
@@ -128,25 +128,19 @@
     <div id="login-page" class="page">
         <div class="login-wrapper">
             <div class="auth-header">
-                <img src="https://github.com/mdwldhsn336-png/Taskesy/blob/main/taskesylogo.png" alt="Logo">
-                <h1 style="color:white; font-size:2.2rem; font-weight:800; margin-bottom:5px;">Taskesy</h1>
+                <img src="https://cdn-icons-png.flaticon.com/512/295/295128.png" alt="Logo">
+                <h1 style="color:white; font-size:2.2rem; font-weight:800; margin-bottom:5px;">WebPro</h1>
                 <p style="color:#cbd5e1; font-size:1rem;">আপনার স্মার্ট ক্যারিয়ার শুরু করুন</p>
             </div>
-            
             <div class="auth-slider-container" id="auth-slider">
                 <div class="auth-form">
                     <input type="email" id="log-email" class="input-box" placeholder="Email Address">
                     <input type="password" id="log-pass" class="input-box" placeholder="Password">
                     <button class="btn-main" onclick="loginWithEmail(this)">Login Securely</button>
-                    <div style="display:flex; align-items:center; gap:10px; margin:5px 0;">
-                        <hr style="flex:1; border-color:rgba(255,255,255,0.1);"><span style="color:var(--muted); font-size:0.8rem;">OR</span><hr style="flex:1; border-color:rgba(255,255,255,0.1);">
-                    </div>
-                    <button class="google-btn" onclick="loginGoogle()">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="22"> Google Login
-                    </button>
+                    <div style="display:flex; align-items:center; gap:10px; margin:5px 0;"><hr style="flex:1; border-color:rgba(255,255,255,0.1);"><span style="color:var(--muted); font-size:0.8rem;">OR</span><hr style="flex:1; border-color:rgba(255,255,255,0.1);"></div>
+                    <button class="google-btn" onclick="loginGoogle()"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="22"> Google Login</button>
                     <p class="auth-switch-text">New here? <span onclick="toggleAuth(true)">Create Account</span></p>
                 </div>
-                
                 <div class="auth-form">
                     <input type="text" id="reg-name" class="input-box" placeholder="Full Name">
                     <input type="email" id="reg-email" class="input-box" placeholder="Email Address">
@@ -159,11 +153,7 @@
     </div>
 
     <div id="user-app" style="display: none;">
-        <header class="header">
-            <h2>Taskesy</h2>
-            <button onclick="document.body.classList.toggle('light-mode')" style="background:none; border:none; color:var(--text); font-size:1.4rem; cursor:pointer;"><i class="fas fa-moon"></i></button>
-        </header>
-
+        <header class="header"><h2>Taskesy</h2><button onclick="document.body.classList.toggle('light-mode')" style="background:none; border:none; color:var(--text); font-size:1.4rem; cursor:pointer;"><i class="fas fa-moon"></i></button></header>
         <div id="home-page" class="page active">
             <div class="container">
                 <div class="welcome-card"><h3>স্বাগতম, <span id="u-name">User</span>!</h3><p style="font-size: 0.95rem; opacity: 0.9; margin-top:5px;">আপনার রিয়েলটাইম স্ট্যাটাস</p></div>
@@ -211,13 +201,12 @@
             
             <div class="data-box" id="first-name-box" onclick="copyData(this, 'task-firstname')" style="display:none;"><div style="display:flex; flex-direction:column; gap:4px; align-items:center; width:100%;"><span style="font-size:0.7rem; color:var(--muted); font-weight:800; letter-spacing:1px; opacity:0.6;">FIRST NAME</span><span id="task-firstname" style="font-weight:800; font-size:1.2rem; color:var(--text);">Generating...</span></div></div>
             <div class="data-box" id="last-name-box" onclick="copyData(this, 'task-lastname')" style="display:none;"><div style="display:flex; flex-direction:column; gap:4px; align-items:center; width:100%;"><span style="font-size:0.7rem; color:var(--muted); font-weight:800; letter-spacing:1px; opacity:0.6;">LAST NAME</span><span id="task-lastname" style="font-weight:800; font-size:1.2rem; color:var(--text);">Generating...</span></div></div>
-            <div class="data-box" id="gen-gmail-box" onclick="copyData(this, 'task-gengmail')" style="display:none; border-color:var(--info);"><div style="display:flex; flex-direction:column; gap:4px; align-items:center; width:100%;"><span style="font-size:0.7rem; color:var(--info); font-weight:800; letter-spacing:1px; opacity:0.8;">CREATE THIS GMAIL</span><span id="task-gengmail" style="font-weight:800; font-size:1.1rem; color:var(--text);">Generating...</span></div></div>
-            <div id="recovery-mail-box" class="data-box" onclick="copyData(this, 'task-rec-mail')" style="display:none;"><div style="display:flex; flex-direction:column; gap:4px; align-items:center; width:100%;"><span style="font-size:0.7rem; color:var(--warning); font-weight:800; letter-spacing:1px; opacity:0.8;">RECOVERY MAIL</span><span id="task-rec-mail" style="font-weight:800; font-size:1rem; color:var(--text);">Loading...</span></div></div>
-
             <div class="data-box" id="full-name-box" onclick="copyData(this, 'task-fullname')"><div style="display:flex; flex-direction:column; gap:4px; align-items:center; width:100%;"><span style="font-size:0.7rem; color:var(--muted); font-weight:800; letter-spacing:1px; opacity:0.6;">FULL NAME</span><span id="task-fullname" style="font-weight:800; font-size:1.2rem; color:var(--text);">Generating...</span></div></div>
 
             <div class="data-box" id="username-box" onclick="copyData(this, 'task-username')"><div style="display:flex; flex-direction:column; gap:4px; align-items:center; width:100%;"><span style="font-size:0.7rem; color:var(--muted); font-weight:800; letter-spacing:1px; opacity:0.6;">USERNAME</span><span id="task-username" style="font-weight:800; font-size:1.2rem; color:var(--text);">Generating...</span></div></div>
+            <div class="data-box" id="gen-gmail-box" onclick="copyData(this, 'task-gengmail')" style="display:none; border-color:var(--info);"><div style="display:flex; flex-direction:column; gap:4px; align-items:center; width:100%;"><span style="font-size:0.7rem; color:var(--info); font-weight:800; letter-spacing:1px; opacity:0.8;">CREATE THIS GMAIL</span><span id="task-gengmail" style="font-weight:800; font-size:1.1rem; color:var(--text);">Generating...</span></div></div>
             <div class="data-box" id="password-box" onclick="copyData(this, 'task-password')"><div style="display:flex; flex-direction:column; gap:4px; align-items:center; width:100%;"><span style="font-size:0.7rem; color:var(--muted); font-weight:800; letter-spacing:1px; opacity:0.6;">PASSWORD</span><span id="task-password" style="font-weight:800; font-size:1.2rem; color:var(--text);">Loading...</span></div></div>
+            <div id="recovery-mail-box" class="data-box" onclick="copyData(this, 'task-rec-mail')" style="display:none;"><div style="display:flex; flex-direction:column; gap:4px; align-items:center; width:100%;"><span style="font-size:0.7rem; color:var(--warning); font-weight:800; letter-spacing:1px; opacity:0.8;">RECOVERY MAIL</span><span id="task-rec-mail" style="font-weight:800; font-size:1rem; color:var(--text);">Loading...</span></div></div>
 
             <div id="2fa-section" style="background:var(--card); padding:20px; border-radius:16px; margin-top:20px; border:1px solid var(--border); display:none;">
                 <div style="font-size:0.9rem; font-weight:800; margin-bottom:12px; color:var(--warning);">2FA SECRET CODE</div>
@@ -228,6 +217,7 @@
                     <button id="refresh-otp-btn" style="display:none; background:rgba(0,0,0,0.3); border:none; color:white; border-radius:50%; width:40px; height:40px; font-size:1.2rem; cursor:pointer;" onclick="generateOTP(true)"><i class="fas fa-sync-alt"></i></button>
                 </div>
             </div>
+
             <div id="cookie-section" style="background:var(--card); padding:20px; border-radius:16px; margin-top:20px; border:1px solid var(--border); display:none;">
                 <div style="font-size:0.9rem; font-weight:800; margin-bottom:12px; color:var(--info);">COOKIES</div>
                 <div class="input-with-icon"><textarea id="cookie-input" class="input-box" rows="4" placeholder="Paste Cookies Here" oninput="validateCookie()"></textarea><button class="paste-icon-btn paste-icon-btn-textarea" onclick="pasteText('cookie-input')"><i class="fas fa-paste"></i></button></div>
@@ -286,8 +276,6 @@
         window.addEventListener('load', () => { setTimeout(() => { document.getElementById('splash-screen').style.opacity = '0'; setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 500); }, 2000); });
         window.showToast = (msg, type = 'info') => { const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast ${type}`; let icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-triangle' : 'fa-info-circle'; toast.innerHTML = `<i class="fas ${icon}"></i> <span>${msg}</span>`; container.appendChild(toast); setTimeout(() => { toast.style.animation = 'fadeOut 0.4s forwards'; setTimeout(()=>toast.remove(),400); }, 3000); };
 
-        // AUTH & LOGIN 
-        const urlParams = new URLSearchParams(window.location.search); const refUidParam = urlParams.get('ref'); if(refUidParam) { localStorage.setItem('referrerId', refUidParam); window.history.replaceState({}, document.title, window.location.pathname); }
         window.toggleAuth = (isReg) => { document.getElementById('auth-slider').style.transform = isReg ? 'translateX(-50%)' : 'translateX(0)'; };
         window.loginGoogle = () => signInWithPopup(auth, provider).catch(e => showToast(e.message, 'error'));
         window.loginWithEmail = async (btn) => { let e = document.getElementById('log-email').value, p = document.getElementById('log-pass').value; if(!e||!p) return showToast("Enter email and password", "error"); await withLoading(btn, async()=> { try{ await signInWithEmailAndPassword(auth, e, p); showToast("Welcome back!", "success"); }catch(err){ showToast(err.message, "error"); } }); };
@@ -333,12 +321,7 @@
             });
         }
 
-        // TASK SUBMIT LOGIC FIXES
-        window.checkTaskSubmitStatus = () => {
-            let btn = document.getElementById('submit-task-btn');
-            if(window.taskValidation.is2FADone && window.taskValidation.isCookieDone) { btn.style.display = 'flex'; } 
-            else { btn.style.display = 'none'; }
-        };
+        window.checkTaskSubmitStatus = () => { let btn = document.getElementById('submit-task-btn'); if(window.taskValidation.is2FADone && window.taskValidation.isCookieDone) { btn.style.display = 'flex'; } else { btn.style.display = 'none'; } };
 
         window.openTaskModal = (taskId) => {
             activeTaskObj = currentActiveTasks.find(t => t.id === taskId); if(!activeTaskObj) return showToast("Task not found!", "error");
@@ -354,13 +337,11 @@
             document.getElementById('password-box').style.display = 'flex'; document.getElementById('2fa-section').style.display = 'none'; document.getElementById('cookie-section').style.display = 'none'; document.getElementById('2fa-secret').value = ''; document.getElementById('otp-result-box').style.display = 'none'; document.getElementById('cookie-input').value = '';
             
             window.taskValidation = { has2FA: activeTaskObj.is2FA, hasCookie: activeTaskObj.isCookie, is2FADone: !activeTaskObj.is2FA, isCookieDone: !activeTaskObj.isCookie };
-            
             if(activeTaskObj.is2FA) { document.getElementById('2fa-section').style.display = 'block'; document.getElementById('refresh-otp-btn').style.display = (activeTaskObj.mode2fa === 'multi') ? 'block' : 'none'; } 
             if (activeTaskObj.isCookie) { document.getElementById('cookie-section').style.display = 'block'; }
             
             let subBtn = document.getElementById('submit-task-btn'); subBtn.disabled = false; subBtn.innerHTML = `<i class="fas fa-paper-plane"></i> Submit Task`;
-            window.checkTaskSubmitStatus();
-            document.querySelectorAll('.data-box').forEach(el => el.classList.remove('copied')); openSubPage('task-modal');
+            window.checkTaskSubmitStatus(); document.querySelectorAll('.data-box').forEach(el => el.classList.remove('copied')); openSubPage('task-modal');
         };
 
         window.pasteText = async (targetId) => { try { const text = await navigator.clipboard.readText(); document.getElementById(targetId).value = text; if(targetId === 'cookie-input') window.validateCookie(); if(targetId === '2fa-secret') { window.taskValidation.is2FADone = false; document.getElementById('otp-result-box').style.display='none'; window.checkTaskSubmitStatus(); } showToast("Pasted successfully!", "success"); } catch(e) { showToast("Paste manually! Permission denied.", "error"); } };
@@ -384,7 +365,6 @@
         function listenToWithdrawHistory(uid) { onSnapshot(query(collection(db, "withdrawals"), where("uid", "==", uid)), (snap) => { let docsArr = []; snap.forEach(d => { docsArr.push({id: d.id, ...d.data()}); }); docsArr.sort((a,b) => new Date(b.time) - new Date(a.time)); let html = ''; let latestHtml = ''; docsArr.forEach((data, index) => { let color = data.status==='approved'?'var(--success)':data.status==='rejected'?'var(--danger)':'var(--warning)'; let card = `<div class="section-box" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;"><div><h4 style="color:var(--primary); font-weight:800;">৳ ${data.amount}</h4><p style="font-size:0.85rem; color:var(--muted); font-weight:600; margin-top:4px;">${data.method.toUpperCase()} - <span style="color:var(--text);">${data.account}</span></p></div><span style="background:${color}; color:white; padding:6px 12px; border-radius:12px; font-size:0.8rem; font-weight:800;">${data.status.toUpperCase()}</span></div>`; html += card; if(index === 0) latestHtml = `<h4 style="margin-bottom:12px; font-size:1.1rem; font-weight:800;">Latest Withdraw Status</h4>` + card; }); document.getElementById('w-history-list').innerHTML = html || '<p style="text-align:center; color:var(--muted); font-weight:600; margin-top:20px;">No history found.</p>'; document.getElementById('wallet-recent-withdraw').innerHTML = latestHtml; }); }
         window.updateUserName = async (btn) => { let newName = document.getElementById('setting-name-input').value; if(!newName) return; await withLoading(btn, async () => { await updateProfile(auth.currentUser, { displayName: newName }); await updateDoc(doc(db, "users", currentUser.uid), { name: newName }); updateProfileUI(auth.currentUser); showToast("Name Updated!", "success"); }); }; window.deleteUserAccount = async () => { if(confirm("Account will be permanently deleted!")) { try { await deleteUser(auth.currentUser); } catch(e) { showToast("Login again to delete.", "error"); } } };
 
-        // --- Admin Functions ---
         window.toggleTaskInputs = () => { let type = document.getElementById('new-task-type').value; document.getElementById('standard-inputs').style.display = type === 'tg' ? 'none' : 'block'; document.getElementById('gmail-inputs').style.display = type === 'gmail' ? 'block' : 'none'; document.getElementById('tg-inputs').style.display = type === 'tg' ? 'block' : 'none'; document.getElementById('universal-2fa-box').style.display = type === 'tg' ? 'none' : 'block'; document.getElementById('cookie-toggle-box').style.display = (type === 'tg' || type === 'gmail') ? 'none' : 'block'; };
         window.adminAddTask = async (btn) => { let type = document.getElementById('new-task-type').value; let name = document.getElementById('new-task-name').value; let price = parseFloat(document.getElementById('new-task-price').value); if(!name || !price) return showToast("Name and Price required", "error"); let isCookie = document.getElementById('new-task-is-cookie').checked; let is2FA = document.getElementById('new-task-2fa-req').checked; if(type === 'gmail' || type === 'tg') isCookie = false; let taskObj = { type: type, name: name, price: price, is2FA: is2FA, isCookie: isCookie }; if(type !== 'tg') taskObj.password = document.getElementById('new-task-pass').value; if(taskObj.is2FA) taskObj.mode2fa = document.getElementById('new-task-2fa-mode').value; if(type === 'gmail') taskObj.recoveryMail = document.getElementById('new-task-rec-mail').value; if(type === 'tg') { taskObj.link = document.getElementById('new-task-tg-link').value; taskObj.is2FA = false; } await withLoading(btn, async () => { await addDoc(collection(db, "tasks"), taskObj); showToast("Task Added!", "success"); }); };
         window.deleteAdminTask = async (id) => { if(confirm("Delete this task?")) { await deleteDoc(doc(db, "tasks", id)); showToast("Deleted", "success"); } };
@@ -404,9 +384,47 @@
         window.formatReportData = (docData, taskId, taskName) => { let cols = sheetConfigs[taskId]?.cols || ["Username", "Password", "2FA Code", "Task ID"]; let obj = {}; cols.forEach(col => { if(col === 'Username') obj[col] = docData.username || ''; else if(col === 'Password') obj[col] = docData.password || ''; else if(col === '2FA Code') obj[col] = docData.secret2fa || ''; else if(col === 'Cookies') obj[col] = docData.cookie || ''; else if(col === 'First Name') obj[col] = docData.firstName || ''; else if(col === 'Last Name') obj[col] = docData.lastName || ''; else if(col === 'Full Name') obj[col] = docData.fullName || ''; else if(col === 'Recovery Email') obj[col] = docData.recoveryMail || ''; else if(col === 'Generated Email') obj[col] = docData.generatedEmail || ''; else if(col === 'Task ID') obj[col] = docData.taskId || ''; else obj[col] = docData[col] || ''; }); return obj; };
         window.renderLiveSheets = () => { let container = document.getElementById('live-sheets-container'); let html = ''; let groups = {}; liveSubmissions.forEach(sub => { let sheetKey = sub.activeTaskId; if(!groups[sheetKey]) groups[sheetKey] = { id: sheetKey, name: sub.taskName || 'Unknown Task', data: [] }; groups[sheetKey].data.push(formatReportData(sub, sub.activeTaskId, sub.taskName)); }); if(Object.keys(groups).length === 0) { container.innerHTML = '<p style="text-align:center; color:var(--muted);">No active pending tasks to display.</p>'; return; } for(let [tId, group] of Object.entries(groups)) { html += `<div class="section-box" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; border-left: 4px solid var(--primary);" onclick="openSingleLiveSheet('${tId}')"><div style="display:flex; align-items:center; gap:15px;"><i class="fas fa-file-excel" style="font-size:2rem; color:var(--success);"></i><div><b style="font-size:1.1rem; color:var(--primary);">${group.name}</b><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">${group.data.length} Submissions</p></div></div><i class="fas fa-chevron-right" style="color:var(--muted);"></i></div>`; } container.innerHTML = html; window.currentLiveGroups = groups; };
         window.openSingleLiveSheet = (tId) => { let group = window.currentLiveGroups[tId]; if(!group) return; document.getElementById('live-sheet-title').innerText = group.name; let html = `<div class="live-table-wrapper"><table class="live-table"><thead><tr>`; let cols = sheetConfigs[tId]?.cols || ["Username", "Password", "2FA Code", "Task ID"]; cols.forEach(col => { html += `<th>${col}</th>`; }); html += `</tr></thead><tbody>`; group.data.forEach(row => { html += `<tr>`; cols.forEach(col => html += `<td>${row[col]||'-'}</td>`); html += `</tr>`; }); html += `</tbody></table></div>`; document.getElementById('single-sheet-container').innerHTML = html; document.getElementById('dl-single-sheet-btn').onclick = () => downloadSingleSheet(tId, group.name); openSubPage('admin-live-sheet-view'); };
-        window.downloadSingleSheet = (tId, name) => { let group = window.currentLiveGroups[tId]; if(!group || group.data.length === 0) return; const ws = XLSX.utils.json_to_sheet(group.data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Data"); XLSX.writeFile(wb, `WebPro_${name.replace(/\s+/g, '_')}_Live.xlsx`); showToast("Downloaded!", "success"); };
-        window.resetToday = async (btn) => { if(!confirm("Are you sure? This will save all active files to history and shift Pending to Processing.")) return; await withLoading(btn, async () => { const q = query(collection(db, "submissions"), where("archived", "==", false)); const snap = await getDocs(q); let reportsGroups = {}; let batch = writeBatch(db); snap.forEach(docSnap => { let d = docSnap.data(); let sheetName = (d.taskName || 'General').substring(0,30); if(!reportsGroups[sheetName]) reportsGroups[sheetName] = []; reportsGroups[sheetName].push(formatReportData(d, d.activeTaskId, d.taskName)); batch.update(docSnap.ref, { archived: true, status: 'processing' }); }); const uSnap = await getDocs(collection(db, "users")); uSnap.forEach(d => { let ud = d.data(); let pend = ud.pending || 0; let proc = ud.processing || 0; batch.update(d.ref, { pending: 0, processing: proc + pend, refToday: 0 }); }); if(Object.keys(reportsGroups).length > 0) { await setDoc(doc(collection(db, "reports")), { date: new Date().toLocaleString(), data: reportsGroups, timestamp: serverTimestamp() }); } await batch.commit(); showToast(`Smart Reset Complete!`, "success"); }); };
-        window.downloadArchivedSheet = async (docId, sheetName) => { const snap = await getDoc(doc(db, "reports", docId)); if(!snap.exists()) return showToast("File not found!", "error"); let rData = snap.data(); let tasks = rData.data[sheetName]; if(!tasks || tasks.length === 0) return showToast("No tasks inside", "error"); const wb = XLSX.utils.book_new(); const ws = XLSX.utils.json_to_sheet(tasks); XLSX.utils.book_append_sheet(wb, ws, "Data"); XLSX.writeFile(wb, `WebPro_${sheetName.replace(/[^a-zA-Z0-9]/g, '_')}_${rData.date.split(',')[0].replace(/\//g,'-')}.xlsx`); showToast("File Downloaded!", "success"); };
+        window.downloadSingleSheet = (tId, name) => { let group = window.currentLiveGroups[tId]; if(!group || group.data.length === 0) return; let cols = sheetConfigs[tId]?.cols || ["Username", "Password", "2FA Code", "Task ID"]; const ws = XLSX.utils.json_to_sheet(group.data, { header: cols }); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Data"); XLSX.writeFile(wb, `WebPro_${name.replace(/\s+/g, '_')}_Live.xlsx`); showToast("Downloaded!", "success"); };
+        
+        // Reset Today Fixed (Stores Column Maps in DB)
+        window.resetToday = async (btn) => { 
+            if(!confirm("Are you sure? This will save all active files to history and shift Pending to Processing.")) return; 
+            await withLoading(btn, async () => { 
+                const q = query(collection(db, "submissions"), where("archived", "==", false)); 
+                const snap = await getDocs(q); 
+                let reportsGroups = {}; let sheetColsMap = {}; let batch = writeBatch(db); 
+                snap.forEach(docSnap => { 
+                    let d = docSnap.data(); let sheetName = (d.taskName || 'General').substring(0,30); 
+                    if(!reportsGroups[sheetName]) {
+                        reportsGroups[sheetName] = [];
+                        sheetColsMap[sheetName] = sheetConfigs[d.activeTaskId]?.cols || ["Username", "Password", "Task ID"];
+                    }
+                    reportsGroups[sheetName].push(formatReportData(d, d.activeTaskId, d.taskName)); 
+                    batch.update(docSnap.ref, { archived: true, status: 'processing' }); 
+                }); 
+                const uSnap = await getDocs(collection(db, "users")); 
+                uSnap.forEach(d => { let ud = d.data(); let pend = ud.pending || 0; let proc = ud.processing || 0; batch.update(d.ref, { pending: 0, processing: proc + pend, refToday: 0 }); }); 
+                if(Object.keys(reportsGroups).length > 0) { 
+                    await setDoc(doc(collection(db, "reports")), { date: new Date().toLocaleString(), data: reportsGroups, sheetCols: sheetColsMap, timestamp: serverTimestamp() }); 
+                } 
+                await batch.commit(); showToast(`Smart Reset Complete!`, "success"); 
+            }); 
+        };
+        
+        // Download Archived Sheet Fixed (Uses Saved Column Maps)
+        window.downloadArchivedSheet = async (docId, sheetName) => { 
+            const snap = await getDoc(doc(db, "reports", docId)); 
+            if(!snap.exists()) return showToast("File not found!", "error"); 
+            let rData = snap.data(); let tasks = rData.data[sheetName]; 
+            if(!tasks || tasks.length === 0) return showToast("No tasks inside", "error"); 
+            const wb = XLSX.utils.book_new(); 
+            let cols = (rData.sheetCols && rData.sheetCols[sheetName]) ? rData.sheetCols[sheetName] : Object.keys(tasks[0]);
+            const ws = XLSX.utils.json_to_sheet(tasks, { header: cols }); 
+            XLSX.utils.book_append_sheet(wb, ws, "Data"); 
+            XLSX.writeFile(wb, `taskesy_${sheetName.replace(/[^a-zA-Z0-9]/g, '_')}_${rData.date.split(',')[0].replace(/\//g,'-')}.xlsx`); 
+            showToast("File Downloaded!", "success"); 
+        };
+        
         window.navPage = (pageId, el) => { if(history.state && history.state.page === pageId) return; history.pushState({page: pageId}, null, "#" + pageId); document.querySelectorAll('#user-app .page').forEach(p => p.classList.remove('active')); document.getElementById(pageId).classList.add('active'); if(el) { document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); } }; window.openSubPage = (id) => { history.pushState({page: history.state?.page || 'home-page'}, null, "#" + id); document.getElementById(id).classList.add('active'); }; window.closeSubPage = () => { history.back(); }; window.openAdminPage = (id) => { if(history.state && history.state.page === id) return; history.pushState({page: id}, null, "#" + id); document.querySelectorAll('#admin-app .page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); }; window.closeAdminPage = () => { history.back(); }; window.copyData = (el, id) => { navigator.clipboard.writeText(document.getElementById(id).innerText); el.classList.add('copied'); showToast("Copied to clipboard!", "success"); };
     </script>
 </body>
