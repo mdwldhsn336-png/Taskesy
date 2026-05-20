@@ -14,27 +14,26 @@
         
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        /* Ultra Modern Background */
-        body { 
-            background-color: var(--bg); 
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.12) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(147, 51, 234, 0.12) 0%, transparent 40%);
-            background-attachment: fixed;
-            color: var(--text); overflow: hidden; transition: background 0.4s ease, color 0.4s ease; 
-        }
-        .light-mode body {
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(147, 51, 234, 0.05) 0%, transparent 40%);
-        }
+        body { color: var(--text); overflow: hidden; }
+        
+        /* Ultra Modern Animated Glassmorphism Background */
+        .bg-layer { position: fixed; inset: 0; z-index: -1; background-color: var(--bg); overflow: hidden; transition: background-color 0.4s; }
+        .bg-shape { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.4; animation: floatBg 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1); }
+        .shape-1 { width: 400px; height: 400px; background: var(--primary); top: -10%; left: -10%; }
+        .shape-2 { width: 500px; height: 500px; background: #9333ea; bottom: -20%; right: -10%; animation-delay: -5s; }
+        .shape-3 { width: 350px; height: 350px; background: #0ea5e9; top: 35%; left: 35%; animation-delay: -10s; }
+        .shape-4 { width: 250px; height: 250px; background: #f43f5e; bottom: 10%; left: -5%; animation-delay: -15s; opacity: 0.3; }
+        .light-mode .bg-shape { opacity: 0.25; filter: blur(100px); }
+        @keyframes floatBg { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(60px, 90px) scale(1.15); } }
+        
+        .page, .bottom-nav, .header, .custom-modal { position: relative; z-index: 10; }
         
         .page { display: none; height: 100dvh; width: 100%; position: absolute; overflow-y: auto; padding-bottom: 120px; -webkit-overflow-scrolling: touch; }
         .page.active { display: block; animation: fadeSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .container { padding: 15px; }
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--border); }
-        .light-mode .header { background: rgba(255, 255, 255, 0.8); }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(15px); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--border); }
+        .light-mode .header { background: rgba(255, 255, 255, 0.7); }
         .header h2 { font-size: 1.5rem; font-weight: 800; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; transition: background 0.4s; }
 
         /* Splash Screen & Animation */
@@ -70,7 +69,7 @@
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
         .stat-card { background: var(--card); padding: 16px; border-radius: 16px; text-align: center; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; }
         .stat-card h4 { font-size: 1.5rem; margin-top: 5px; color: var(--text); font-weight: 800; }
-        .section-box { background: var(--card); border-radius: 16px; padding: 16px; border: 1px solid var(--border); margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .section-box { background: var(--card); border-radius: 16px; padding: 16px; border: 1px solid var(--border); margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); backdrop-filter: blur(10px); }
         
         .input-box { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 14px 16px; border-radius: 12px; outline: none; font-size: 1.05rem; font-weight: 500; transition: border-color 0.3s; margin-bottom:12px; }
         .input-box:focus { border-color: var(--primary); }
@@ -91,7 +90,7 @@
         .paste-icon-btn:active { transform: translateY(-50%) scale(0.9); box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); }
         .paste-icon-btn-textarea { top: 6px; transform: none; } .paste-icon-btn-textarea:active { transform: scale(0.9); }
         
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 70px; background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); z-index: 100; box-shadow: 0 -5px 20px rgba(0,0,0,0.2); }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 70px; background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(15px); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); z-index: 100; box-shadow: 0 -5px 20px rgba(0,0,0,0.2); }
         .light-mode .bottom-nav { background: rgba(255, 255, 255, 0.95); }
         .nav-item { color: var(--muted); display: flex; flex-direction: column; align-items: center; font-size: 0.8rem; text-decoration: none; width: 55px; font-weight: 600; transition: 0.3s; }
         .nav-item i { font-size: 1.3rem; margin-bottom: 4px; transition: 0.3s; }
@@ -100,7 +99,7 @@
         .task-hex { width: 62px; height: 62px; background: var(--primary-gradient); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 1.5rem; position: relative; top: -20px; border: 5px solid var(--bg); box-shadow: 0 10px 25px rgba(0,0,0,0.2); transition: 0.3s; }
         .task-hex:active { transform: scale(0.9); }
         
-        .leaderboard-list { background: var(--card); border-radius: 16px; padding: 10px; border: 1px solid var(--border); }
+        .leaderboard-list { background: var(--card); border-radius: 16px; padding: 10px; border: 1px solid var(--border); backdrop-filter: blur(10px); }
         .lb-item { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-bottom: 1px solid var(--border); transition: 0.3s; }
         .lb-item:last-child { border-bottom: none; }
         .lb-rank { font-weight: 800; color: var(--primary); width: 35px; font-size: 1.3rem; }
@@ -124,14 +123,15 @@
         .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: .4s; }
         input:checked + .slider { background-color: var(--success); }
         input:checked + .slider:before { transform: translateX(20px); }
-        .pro-avatar { width: 100px; height: 100px; border-radius: 50%; background: var(--primary-gradient); display: flex; justify-content: center; align-items: center; color: white; font-size: 3rem; font-weight: 800; margin: 0 auto 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 4px solid var(--bg); transition: background 0.4s; }
+        
+        .pro-avatar { width: 110px; height: 110px; border-radius: 50%; background: var(--primary-gradient); display: flex; justify-content: center; align-items: center; color: white; font-size: 3.5rem; font-weight: 800; margin: 0 auto 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 4px solid var(--card); transition: background 0.4s; }
         .task-list-item { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 12px; display:flex; justify-content: space-between; align-items: center; }
         .live-table-wrapper { width: 100%; overflow-x: auto; background: var(--card); border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; }
         .live-table { width: 100%; border-collapse: collapse; min-width: 600px; }
         .live-table th, .live-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
         .live-table th { background: rgba(0,0,0,0.2); font-weight: 800; color: var(--primary); }
 
-        /* Feature 1: Notice Auto Scroll */
+        /* Notice Auto Scroll */
         .scroll-text-box { background: var(--primary-gradient); color: white; padding: 10px 15px; border-radius: 12px; margin-bottom: 15px; font-weight: 700; font-size: 1rem; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 10px; transition: background 0.4s; }
         .scroll-text-box i { font-size: 1.2rem; animation: pulseLogo 2s infinite; }
         .scroll-wrapper { flex: 1; overflow: hidden; white-space: nowrap; position: relative; display: flex; align-items: center; }
@@ -155,10 +155,10 @@
         @keyframes spinRotate { 100% { transform: rotate(360deg); } }
         .light-mode .ultra-circle { background: rgba(255,255,255,0.8); box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-color: var(--c); }
         
-        /* Live Badge for Task Page */
-        .live-badge { display: flex; align-items: center; gap: 6px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: var(--success); padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 800; box-shadow: 0 0 10px rgba(16, 185, 129, 0.2); }
-        .pulse-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); animation: pulseDot 1.5s infinite; }
-        @keyframes pulseDot { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+        /* Premium LIVE Badge */
+        .live-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.4); color: var(--danger); padding: 8px 16px; border-radius: 30px; font-size: 1.1rem; font-weight: 800; box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); letter-spacing: 1px; }
+        .pulse-dot { width: 12px; height: 12px; background: var(--danger); border-radius: 50%; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); animation: pulseDot 1.5s infinite; }
+        @keyframes pulseDot { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { transform: scale(1.2); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
 
         /* Profile Button Styling */
         .profile-btn { background: transparent; border-bottom: 1px solid var(--border); border-radius: 0; color: var(--text); justify-content: flex-start; padding: 20px; box-shadow: none; align-items: center; text-decoration: none !important; transition: background 0.3s; gap: 15px; }
@@ -167,6 +167,13 @@
     </style>
 </head>
 <body>
+
+    <div class="bg-layer">
+        <div class="bg-shape shape-1"></div>
+        <div class="bg-shape shape-2"></div>
+        <div class="bg-shape shape-3"></div>
+        <div class="bg-shape shape-4"></div>
+    </div>
 
     <div id="splash-screen">
         <div class="splash-text-container">
@@ -230,12 +237,12 @@
         
         <div id="task-page" class="page">
             <div class="container">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <h3 style="font-size:1.4rem; font-weight:800;">Tasks</h3>
-                        <div class="live-badge"><span class="pulse-dot"></span> Live Trusted</div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <h3 style="font-size:1.5rem; font-weight:800;">Tasks</h3>
+                        <div class="live-badge"><span class="pulse-dot"></span> LIVE</div>
                     </div>
-                    <button onclick="openSubPage('task-rules-page')" style="background:rgba(239, 68, 68, 0.1); color:var(--danger); border:1px solid var(--danger); padding:6px 12px; border-radius:8px; font-weight:700; cursor:pointer;"><i class="fas fa-book-open"></i> Rules</button>
+                    <button onclick="openSubPage('task-rules-page')" style="background:rgba(239, 68, 68, 0.1); color:var(--danger); border:1px solid var(--danger); padding:8px 14px; border-radius:10px; font-weight:800; cursor:pointer; font-size:0.9rem;"><i class="fas fa-book-open"></i> Rules</button>
                 </div>
                 <div id="task-list-container"><div style="text-align:center; padding:20px; color:var(--muted);"><i class="fas fa-spinner fa-spin"></i> Loading Tasks...</div></div>
             </div>
@@ -281,7 +288,16 @@
 
         <div id="profile-page" class="page">
             <div class="container">
-                <div style="text-align: center; padding: 25px 0;"><div class="pro-avatar" id="u-initial">U</div><h2 id="u-fullname" style="font-size:1.8rem; font-weight:800; color:var(--text);">Name</h2><p id="u-email" style="color:var(--muted); font-size:1rem; margin-top:5px; font-weight:500;">Email</p></div>
+                <div style="text-align: center; padding: 25px 0;">
+                    <img id="u-avatar-img" class="pro-avatar" src="" style="display:none; padding:10px; background:var(--card); object-fit:contain;">
+                    <div class="pro-avatar" id="u-initial">U</div>
+                    
+                    <h2 id="u-fullname" style="font-size:1.8rem; font-weight:800; color:var(--text);">Name</h2>
+                    
+                    <div id="u-rank-badge" style="display:none; background:var(--primary-gradient); color:white; padding:6px 16px; border-radius:20px; font-size:0.9rem; font-weight:800; margin:10px auto 0; width:fit-content; box-shadow:0 4px 10px rgba(0,0,0,0.2);"><i class="fas fa-medal"></i> Rank</div>
+                    
+                    <p id="u-email" style="color:var(--muted); font-size:1rem; margin-top:8px; font-weight:500;">Email</p>
+                </div>
                 <div style="background:var(--card); border-radius:18px; border:1px solid var(--border); box-shadow:0 10px 25px rgba(0,0,0,0.1); overflow:hidden; margin-top:10px; display: flex; flex-direction: column;">
                     <a href="javascript:void(0)" class="btn-main profile-btn" onclick="openSubPage('referral-page')">
                         <i class="fas fa-user-plus" style="width:40px; font-size:1.4rem; color:var(--success); text-align:center;"></i> 
@@ -441,8 +457,27 @@
         const fnameDB = ["Aarav", "Vihaan", "Aditya", "Sai", "Arjun", "Rahul", "Amit", "Mohammad", "Abdullah", "John", "David", "Rahim", "Karim", "Tariqul", "Liam", "Hasan", "Imran", "Ahsanullah", "Zahid", "Kazi", "Sumon", "Jubayer", "Rubel", "Mahbub", "James", "Tanvir", "Ratul", "Rafiqul", "Ashikur", "Mehedi", "Nazmul", "Fatima", "Ayesha", "Nusrat", "Marium", "Emma", "Sophia", "Olivia", "Farzana", "Sonia", "Isabella", "Samiha"];
         const lnameDB = ["Roy", "Das", "Sen", "Kumar", "Patel", "Bose", "Hasan", "Ali", "Noman", "Tuz", "Siddiqa", "Smith", "Miller", "Uddin", "Bakhsh", "Jahan", "Begum", "Islam", "Johnson", "Williams", "Khan", "Brown", "Davis", "Mia", "Khatun", "Alam", "Wilson", "Martinez", "Ahmed", "Sikder", "Rahman", "Huda"];
         
-        // Added new specific column format format
         const colOptions = ["Username", "Password", "2FA Code", "Cookies", "UID", "First Name", "Last Name", "Full Name", "Generated Email", "Recovery Email", "Task ID", "Username|Password|Cookies"];
+
+        // --- Rank & Gamification Helper ---
+        window.getUserAvatar = (approvedCount, fallbackPhoto, name) => {
+            let count = approvedCount || 0;
+            if (count >= 1 && count <= 10) return 'https://cdn-icons-png.flaticon.com/512/3233/3233483.png'; // Soldier
+            if (count >= 11 && count <= 50) return 'https://cdn-icons-png.flaticon.com/512/2205/2205128.png'; // Commander
+            if (count >= 51 && count <= 100) return 'https://cdn-icons-png.flaticon.com/512/4140/4140061.png'; // Minister
+            if (count >= 101 && count <= 200) return 'https://cdn-icons-png.flaticon.com/512/4140/4140047.png'; // Prime Minister
+            if (count > 200) return 'https://cdn-icons-png.flaticon.com/512/3135/3135767.png'; // King
+            return fallbackPhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(name || 'User')}&background=random&color=fff`;
+        };
+        
+        window.getUserRankName = (count) => {
+            if (count >= 1 && count <= 10) return '<i class="fas fa-shield-alt"></i> সৈনিক';
+            if (count >= 11 && count <= 50) return '<i class="fas fa-khanda"></i> সেনাপতি';
+            if (count >= 51 && count <= 100) return '<i class="fas fa-user-tie"></i> মন্ত্রী';
+            if (count >= 101 && count <= 200) return '<i class="fas fa-user-check"></i> প্রধান মন্ত্রী';
+            if (count > 200) return '<i class="fas fa-crown"></i> রাজা';
+            return 'Newbie';
+        };
 
         async function withLoading(btnEl, asyncFn) { if(!btnEl || btnEl.disabled) return; let originalText = btnEl.innerHTML; btnEl.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Wait...`; btnEl.disabled = true; try { await asyncFn(); } catch(e) { console.error(e); } finally { btnEl.innerHTML = originalText; btnEl.disabled = false; } }
         window.addEventListener('popstate', (e) => { document.querySelectorAll('.custom-modal').forEach(m => m.classList.remove('active')); let targetPage = (currentUser && adminEmails.includes(currentUser.email)) ? 'admin-home' : 'home-page'; if (e.state && e.state.page) targetPage = e.state.page; let pEl = document.getElementById(targetPage); if (pEl && pEl.classList.contains('page')) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); pEl.classList.add('active'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); let navLink = document.querySelector(`.nav-item[onclick*="${targetPage}"]`); if(navLink) navLink.classList.add('active'); } });
@@ -467,52 +502,57 @@
         async function checkOrCreateUserDoc(user) { const userRef = doc(db, "users", user.uid); const snap = await getDoc(userRef); let refId = localStorage.getItem('referrerId'); if (refId === user.uid) refId = null; if (!snap.exists()) { let finalRefId = refId || defaultRefUid; if (user.uid === defaultRefUid || user.email === "ajmirrahman84@gmail.com") finalRefId = null; userDocData = { name: user.displayName, email: user.email, photo: user.photoURL, approved: 0, rejected: 0, earned: 0, pending: 0, processing: 0, withdrawStatus: "None", withdrawn: 0, banned: false, joinDate: new Date().toLocaleDateString('en-GB'), referrerId: finalRefId, refEarn: 0, refToday: 0, refCount: 0, tgJoined: false }; await setDoc(userRef, userDocData); if(finalRefId) { await updateDoc(doc(db, "users", finalRefId), { refCount: increment(1) }).catch(e=>console.log(e)); } localStorage.removeItem('referrerId'); } else { userDocData = snap.data(); let updates = { name: user.displayName, photo: user.photoURL }; if (!userDocData.referrerId && user.uid !== defaultRefUid && user.email !== "ajmirrahman84@gmail.com") { updates.referrerId = defaultRefUid; await updateDoc(doc(db, "users", defaultRefUid), { refCount: increment(1) }).catch(e=>console.log(e)); userDocData.referrerId = defaultRefUid; } await updateDoc(userRef, updates); localStorage.removeItem('referrerId'); } }
         
         function updateProfileUI(user) { 
-            let initial = user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U'; 
-            document.getElementById('u-initial').innerText = initial; 
-            document.getElementById('u-fullname').innerText = user.displayName; 
+            document.getElementById('u-fullname').innerText = user.displayName || 'User'; 
             document.getElementById('u-email').innerText = user.email; 
             document.getElementById('setting-name-input').value = user.displayName; 
-            
-            // Update Welcome Card Home page Name
             let homeName = document.getElementById('u-name');
             if (homeName) homeName.innerText = user.displayName || 'User';
+            
+            let appCount = userDocData.approved || 0;
+            let avatarUrl = window.getUserAvatar(appCount, user.photoURL, user.displayName);
+            let initialDiv = document.getElementById('u-initial');
+            let imgDiv = document.getElementById('u-avatar-img');
+            
+            if (appCount > 0) {
+                initialDiv.style.display = 'none';
+                imgDiv.style.display = 'block';
+                imgDiv.src = avatarUrl;
+                document.getElementById('u-rank-badge').innerHTML = window.getUserRankName(appCount);
+                document.getElementById('u-rank-badge').style.display = 'block';
+            } else {
+                initialDiv.style.display = 'flex';
+                initialDiv.innerText = user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U';
+                imgDiv.style.display = 'none';
+                document.getElementById('u-rank-badge').style.display = 'none';
+            }
         }
         
-        function listenToUserStats(uid) { onSnapshot(doc(db, "users", uid), (docSnap) => { if(docSnap.exists()){ let d = docSnap.data(); userDocData = d; if(d.banned) { logoutUser(); alert("You are banned!"); return; } document.getElementById('stat-app').innerText = d.approved || 0; document.getElementById('stat-earn').innerText = "৳ " + parseFloat(d.earned||0).toFixed(2); document.getElementById('wallet-bal').innerText = "৳ " + parseFloat(d.earned||0).toFixed(2); document.getElementById('stat-pend').innerText = d.pending || 0; document.getElementById('stat-proc').innerText = d.processing || 0; document.getElementById('stat-with').innerText = d.withdrawStatus || "None"; document.getElementById('ref-total-earn').innerText = "৳ " + (d.refEarn||0).toFixed(2); document.getElementById('ref-today-earn').innerText = "৳ " + (d.refToday||0).toFixed(2); document.getElementById('ref-user-count').innerText = d.refCount||0; } }); }
+        function listenToUserStats(uid) { onSnapshot(doc(db, "users", uid), (docSnap) => { if(docSnap.exists()){ let d = docSnap.data(); userDocData = d; if(d.banned) { logoutUser(); alert("You are banned!"); return; } document.getElementById('stat-app').innerText = d.approved || 0; document.getElementById('stat-earn').innerText = "৳ " + parseFloat(d.earned||0).toFixed(2); document.getElementById('wallet-bal').innerText = "৳ " + parseFloat(d.earned||0).toFixed(2); document.getElementById('stat-pend').innerText = d.pending || 0; document.getElementById('stat-proc').innerText = d.processing || 0; document.getElementById('stat-with').innerText = d.withdrawStatus || "None"; document.getElementById('ref-total-earn').innerText = "৳ " + (d.refEarn||0).toFixed(2); document.getElementById('ref-today-earn').innerText = "৳ " + (d.refToday||0).toFixed(2); document.getElementById('ref-user-count').innerText = d.refCount||0; 
+        
+        // Update Avatar on Live Stats change
+        let avatarUrl = window.getUserAvatar(d.approved, currentUser.photoURL, currentUser.displayName);
+        let imgDiv = document.getElementById('u-avatar-img'); let initialDiv = document.getElementById('u-initial');
+        if (d.approved > 0) { initialDiv.style.display = 'none'; imgDiv.style.display = 'block'; imgDiv.src = avatarUrl; document.getElementById('u-rank-badge').innerHTML = window.getUserRankName(d.approved); document.getElementById('u-rank-badge').style.display = 'block'; } else { initialDiv.style.display = 'flex'; imgDiv.style.display = 'none'; document.getElementById('u-rank-badge').style.display = 'none'; }
+        } }); }
+        
         function setupReferralPage(uid) { document.getElementById('ref-link-text').innerText = window.location.origin + window.location.pathname + "?ref=" + uid; }
-        function listenToLeaderboard() { onSnapshot(query(collection(db, "users"), orderBy("approved", "desc"), limit(20)), (snap) => { let html = ''; let rank = 1; snap.forEach(docSnap => { let d = docSnap.data(); if(d.approved > 0 && !d.banned) { let isMe = docSnap.id === currentUser.uid ? 'me' : ''; let nameTxt = docSnap.id === currentUser.uid ? 'আপনি' : d.name; html += `<div class="lb-item ${isMe}"><span class="lb-rank">${rank}</span><div class="lb-user"><img src="${d.photo||'https://via.placeholder.com/100'}"> ${nameTxt}</div><span class="lb-score">${d.approved} Tasks</span></div>`; rank++; } }); document.getElementById('leaderboard-container').innerHTML = html || '<p style="text-align:center; color:var(--muted); padding:20px; font-weight:600;">No ranks yet.</p>'; }); }
         
-        function applyTheme(color, gradient) {
-            document.documentElement.style.setProperty('--primary', color);
-            document.documentElement.style.setProperty('--primary-gradient', gradient);
-        }
+        function listenToLeaderboard() { onSnapshot(query(collection(db, "users"), orderBy("approved", "desc"), limit(20)), (snap) => { let html = ''; let rank = 1; snap.forEach(docSnap => { let d = docSnap.data(); if(d.approved > 0 && !d.banned) { let isMe = docSnap.id === currentUser.uid ? 'me' : ''; let nameTxt = docSnap.id === currentUser.uid ? 'আপনি' : d.name; 
+        let avt = window.getUserAvatar(d.approved, d.photo, d.name);
+        html += `<div class="lb-item ${isMe}"><span class="lb-rank">${rank}</span><div class="lb-user"><img src="${avt}" style="background:var(--bg); object-fit:contain; padding:2px;"> <div><b style="font-size:1rem;">${nameTxt}</b><br><span style="font-size:0.75rem; color:var(--muted);">${window.getUserRankName(d.approved)}</span></div></div><span class="lb-score">${d.approved} Tasks</span></div>`; rank++; } }); document.getElementById('leaderboard-container').innerHTML = html || '<p style="text-align:center; color:var(--muted); padding:20px; font-weight:600;">No ranks yet.</p>'; }); }
+        
+        function applyTheme(color, gradient) { document.documentElement.style.setProperty('--primary', color); document.documentElement.style.setProperty('--primary-gradient', gradient); }
 
-        window.changeAppTheme = async (color, gradient) => {
-            applyTheme(color, gradient);
-            await setDoc(doc(db, "settings", "config"), { themeColor: color, themeGradient: gradient }, {merge:true});
-            showToast("Theme Updated Successfully!", "success");
-        };
+        window.changeAppTheme = async (color, gradient) => { applyTheme(color, gradient); await setDoc(doc(db, "settings", "config"), { themeColor: color, themeGradient: gradient }, {merge:true}); showToast("Theme Updated Successfully!", "success"); };
 
         function listenToGlobalConfig() { 
             onSnapshot(doc(db, "settings", "config"), (docSnap) => { 
                 if(docSnap.exists()){ 
                     globalTaskConfig = docSnap.data(); 
-                    
-                    if(globalTaskConfig.themeColor && globalTaskConfig.themeGradient) {
-                        applyTheme(globalTaskConfig.themeColor, globalTaskConfig.themeGradient);
-                    }
-                    
+                    if(globalTaskConfig.themeColor && globalTaskConfig.themeGradient) { applyTheme(globalTaskConfig.themeColor, globalTaskConfig.themeGradient); }
                     document.getElementById('user-notice').innerText = globalTaskConfig.notice || "কোনো নোটিশ নেই।"; 
-                    
-                    if(globalTaskConfig.scrollNotice) {
-                        document.getElementById('scroll-notice-container').style.display = 'flex';
-                        document.getElementById('scroll-notice-text').innerText = globalTaskConfig.scrollNotice;
-                    } else {
-                        document.getElementById('scroll-notice-container').style.display = 'none';
-                    }
-
+                    if(globalTaskConfig.scrollNotice) { document.getElementById('scroll-notice-container').style.display = 'flex'; document.getElementById('scroll-notice-text').innerText = globalTaskConfig.scrollNotice; } else { document.getElementById('scroll-notice-container').style.display = 'none'; }
                     document.getElementById('task-rules-text').innerText = globalTaskConfig.taskRules || "No rules available currently.";
-
                     if(globalTaskConfig.tgLink) document.getElementById('tg-link').href = globalTaskConfig.tgLink; 
                     if(globalTaskConfig.waLink) document.getElementById('wa-link').href = globalTaskConfig.waLink; 
                     if(globalTaskConfig.acLink) document.getElementById('ac-link').href = globalTaskConfig.acLink; 
@@ -606,7 +646,9 @@
         window.renderSavedSheetsList = () => { let container = document.getElementById('saved-sheets-list'); let html = ''; Object.keys(sheetConfigs).forEach(tId => { let conf = sheetConfigs[tId]; html += `<div class="task-list-item"><div><b style="color:var(--info);">${conf.taskName}</b><div style="font-size:0.8rem; color:var(--muted); margin-top:4px;">Cols: ${conf.cols.join(' > ')}</div></div><button style="background:var(--danger); color:white; border:none; padding:8px 12px; border-radius:8px; cursor:pointer;" onclick="deleteSheetConfig('${tId}')"><i class="fas fa-trash"></i></button></div>`; }); container.innerHTML = html || '<p style="color:var(--muted); font-size:0.9rem;">No custom sheets configured.</p>'; };
 
         function setupAdminData() { onSnapshot(doc(db, "settings", "config"), (docSnap) => { if(docSnap.exists()){ let d = docSnap.data(); globalTaskConfig = d; document.getElementById('admin-t-ref').value = d.refPercent || 10; document.getElementById('admin-w-min').value = d.wMin; document.getElementById('admin-w-max').value = d.wMax; document.getElementById('admin-w-rate').value = d.dollarRate; document.getElementById('admin-w-inst').value = d.wRules; document.getElementById('admin-notice-input').value = d.notice; document.getElementById('admin-scroll-notice-input').value = d.scrollNotice || ""; document.getElementById('admin-task-rules-input').value = d.taskRules || ""; document.getElementById('admin-tg-link').value = d.tgLink; document.getElementById('admin-wa-link').value = d.waLink; document.getElementById('admin-ac-link').value = d.acLink || ""; } }); }
-        function listenToAdminRealtime() { onSnapshot(collection(db, "users"), snap => { let u=0, b=0, html=''; snap.forEach(docSnap => { let d = docSnap.data(); u++; b += (d.earned||0); let banBtn = d.banned ? `<button style="background:var(--success); color:white; border:none; padding:8px 12px; border-radius:8px; font-weight:700;" onclick="toggleBan('${docSnap.id}', false)">Unban</button>` : `<button style="background:var(--danger); color:white; border:none; padding:8px 12px; border-radius:8px; font-weight:700;" onclick="toggleBan('${docSnap.id}', true)">Ban</button>`; html += `<div class="user-card" onclick="openUserModal('${docSnap.id}', '${d.name}', '${d.email}', ${d.earned||0}, ${d.approved||0}, ${d.banned}, '${d.joinDate||'N/A'}')"><div style="display:flex; align-items:center;"><img src="${d.photo||'https://via.placeholder.com/100'}"><div><b style="font-size:1.1rem;">${d.name}</b><br><span style="font-size:0.8rem; color:var(--muted);">${d.email}</span></div></div>${banBtn}</div>`; }); document.getElementById('s-total-users').innerText = u; document.getElementById('s-total-bal').innerText = b.toFixed(2); document.getElementById('admin-user-list').innerHTML = html; }); onSnapshot(query(collection(db, "submissions"), where("archived", "==", false)), snap => { liveSubmissions = []; let ts=0, ta=0, tr=0, todaySub=0, pend=0, proc=0; snap.forEach(docSnap => { let d = docSnap.data(); liveSubmissions.push({id: docSnap.id, ...d}); ts++; todaySub++; if(d.status==='approved') ta++; if(d.status==='rejected') tr++; if(d.status==='pending') pend++; if(d.status==='processing') proc++; }); document.getElementById('s-today-sub').innerText = todaySub; document.getElementById('s-today-pend').innerText = pend; document.getElementById('s-today-proc').innerText = proc; renderLiveSheets(); }); onSnapshot(collection(db, "submissions"), snap => { let ts=0, ta=0, tr=0; snap.forEach(docSnap => { let d = docSnap.data(); ts++; if(d.status==='approved') ta++; if(d.status==='rejected') tr++; }); document.getElementById('s-total-task').innerText = ts; document.getElementById('s-tot-app').innerText = ta; document.getElementById('s-tot-rej').innerText = tr; document.getElementById('s-app-rate').innerText = ts>0 ? ((ta/ts)*100).toFixed(1) : 0; }); onSnapshot(collection(db, "withdrawals"), snap => { let wHtml = '', tWith = 0, pCount = 0; snap.forEach(docSnap => { let d = docSnap.data(); if(d.status === 'approved') tWith += d.amount; if(d.status === 'pending') { pCount++; wHtml += `<div class="section-box" style="cursor:pointer;" onclick="openWithdrawDetailsModal('${docSnap.id}', '${d.uid}', '${d.name}', '${d.method}', '${d.account}', ${d.amount})"><b style="font-size:1.1rem;">${d.name}</b> <span style="float:right; color:var(--primary); font-weight:800; font-size:1.2rem;">৳ ${d.amount}</span><p style="font-size:0.9rem; color:var(--muted); font-weight:600; margin-top:5px;">${d.method.toUpperCase()}</p></div>`; } }); document.getElementById('s-tot-with').innerText = tWith.toFixed(2); document.getElementById('admin-w-requests').innerHTML = wHtml || '<p style="text-align:center; color:var(--muted); font-weight:600;">No pending requests.</p>'; let badge = document.getElementById('admin-w-badge'); if(pCount > 0) { badge.style.display = 'flex'; badge.innerText = pCount; } else { badge.style.display = 'none'; } }); onSnapshot(query(collection(db, "reports"), orderBy("timestamp", "desc")), snap => { let hHtml = ''; snap.forEach(docSnap => { let d = docSnap.data(); let sheetsCount = Object.keys(d.data).length; hHtml += `<div class="section-box"><div><b style="font-size:1.1rem; color:var(--primary);">${d.date}</b><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">Total Saved Files: ${sheetsCount}</p></div><div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">`; for(let [sheetName, tasks] of Object.entries(d.data)) { hHtml += `<div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg); padding:10px; border-radius:8px; border:1px solid var(--border);"><span style="font-weight:600; font-size:0.9rem;"><i class="fas fa-file-excel" style="color:var(--success); margin-right:5px;"></i> ${sheetName} (${tasks.length})</span><button class="btn-main" style="width:auto; padding:6px 12px; font-size:0.8rem; box-shadow:none;" onclick="downloadArchivedSheet('${docSnap.id}', '${sheetName}')"><i class="fas fa-download"></i> DL</button></div>`; } hHtml += `</div></div>`; }); document.getElementById('admin-history-list').innerHTML = hHtml || '<p style="color:var(--muted); font-weight:600;">No history available.</p>'; }); }
+        function listenToAdminRealtime() { onSnapshot(collection(db, "users"), snap => { let u=0, b=0, html=''; snap.forEach(docSnap => { let d = docSnap.data(); u++; b += (d.earned||0); let banBtn = d.banned ? `<button style="background:var(--success); color:white; border:none; padding:8px 12px; border-radius:8px; font-weight:700;" onclick="toggleBan('${docSnap.id}', false)">Unban</button>` : `<button style="background:var(--danger); color:white; border:none; padding:8px 12px; border-radius:8px; font-weight:700;" onclick="toggleBan('${docSnap.id}', true)">Ban</button>`; 
+        let avt = window.getUserAvatar(d.approved, d.photo, d.name);
+        html += `<div class="user-card" onclick="openUserModal('${docSnap.id}', '${d.name}', '${d.email}', ${d.earned||0}, ${d.approved||0}, ${d.banned}, '${d.joinDate||'N/A'}')"><div style="display:flex; align-items:center;"><img src="${avt}" style="background:var(--bg); object-fit:contain; padding:2px;"><div><b style="font-size:1.1rem;">${d.name}</b> <span style="font-size:0.7rem; background:var(--primary-gradient); color:white; padding:2px 6px; border-radius:10px; margin-left:5px; white-space:nowrap;">${window.getUserRankName(d.approved)}</span><br><span style="font-size:0.8rem; color:var(--muted);">${d.email}</span></div></div>${banBtn}</div>`; }); document.getElementById('s-total-users').innerText = u; document.getElementById('s-total-bal').innerText = b.toFixed(2); document.getElementById('admin-user-list').innerHTML = html; }); onSnapshot(query(collection(db, "submissions"), where("archived", "==", false)), snap => { liveSubmissions = []; let ts=0, ta=0, tr=0, todaySub=0, pend=0, proc=0; snap.forEach(docSnap => { let d = docSnap.data(); liveSubmissions.push({id: docSnap.id, ...d}); ts++; todaySub++; if(d.status==='approved') ta++; if(d.status==='rejected') tr++; if(d.status==='pending') pend++; if(d.status==='processing') proc++; }); document.getElementById('s-today-sub').innerText = todaySub; document.getElementById('s-today-pend').innerText = pend; document.getElementById('s-today-proc').innerText = proc; renderLiveSheets(); }); onSnapshot(collection(db, "submissions"), snap => { let ts=0, ta=0, tr=0; snap.forEach(docSnap => { let d = docSnap.data(); ts++; if(d.status==='approved') ta++; if(d.status==='rejected') tr++; }); document.getElementById('s-total-task').innerText = ts; document.getElementById('s-tot-app').innerText = ta; document.getElementById('s-tot-rej').innerText = tr; document.getElementById('s-app-rate').innerText = ts>0 ? ((ta/ts)*100).toFixed(1) : 0; }); onSnapshot(collection(db, "withdrawals"), snap => { let wHtml = '', tWith = 0, pCount = 0; snap.forEach(docSnap => { let d = docSnap.data(); if(d.status === 'approved') tWith += d.amount; if(d.status === 'pending') { pCount++; wHtml += `<div class="section-box" style="cursor:pointer;" onclick="openWithdrawDetailsModal('${docSnap.id}', '${d.uid}', '${d.name}', '${d.method}', '${d.account}', ${d.amount})"><b style="font-size:1.1rem;">${d.name}</b> <span style="float:right; color:var(--primary); font-weight:800; font-size:1.2rem;">৳ ${d.amount}</span><p style="font-size:0.9rem; color:var(--muted); font-weight:600; margin-top:5px;">${d.method.toUpperCase()}</p></div>`; } }); document.getElementById('s-tot-with').innerText = tWith.toFixed(2); document.getElementById('admin-w-requests').innerHTML = wHtml || '<p style="text-align:center; color:var(--muted); font-weight:600;">No pending requests.</p>'; let badge = document.getElementById('admin-w-badge'); if(pCount > 0) { badge.style.display = 'flex'; badge.innerText = pCount; } else { badge.style.display = 'none'; } }); onSnapshot(query(collection(db, "reports"), orderBy("timestamp", "desc")), snap => { let hHtml = ''; snap.forEach(docSnap => { let d = docSnap.data(); let sheetsCount = Object.keys(d.data).length; hHtml += `<div class="section-box"><div><b style="font-size:1.1rem; color:var(--primary);">${d.date}</b><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">Total Saved Files: ${sheetsCount}</p></div><div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">`; for(let [sheetName, tasks] of Object.entries(d.data)) { hHtml += `<div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg); padding:10px; border-radius:8px; border:1px solid var(--border);"><span style="font-weight:600; font-size:0.9rem;"><i class="fas fa-file-excel" style="color:var(--success); margin-right:5px;"></i> ${sheetName} (${tasks.length})</span><button class="btn-main" style="width:auto; padding:6px 12px; font-size:0.8rem; box-shadow:none;" onclick="downloadArchivedSheet('${docSnap.id}', '${sheetName}')"><i class="fas fa-download"></i> DL</button></div>`; } hHtml += `</div></div>`; }); document.getElementById('admin-history-list').innerHTML = hHtml || '<p style="color:var(--muted); font-weight:600;">No history available.</p>'; }); }
 
         window.searchUser = (val) => { let term = val.toLowerCase(); document.querySelectorAll('#admin-user-list .user-card').forEach(card => { if(card.innerText.toLowerCase().includes(term)) card.style.display = 'flex'; else card.style.display = 'none'; }); }; window.openUserModal = (id, name, email, earned, app, banned, joinDate) => { event.stopPropagation(); document.getElementById('admin-ud-content').innerHTML = `<div class="section-box" style="text-align:center;"><h2 style="font-weight:800; font-size:1.8rem;">${name}</h2><p style="color:var(--muted); font-weight:600;">${email}</p><h3 style="color:var(--primary); margin-top:15px; font-size:2rem;">৳ <span id="modal-u-bal">${parseFloat(earned).toFixed(2)}</span></h3><div style="margin-top:10px; display:flex; gap:10px; justify-content:center;"><input type="number" id="edit-u-bal" class="input-box" style="width:100px; margin:0;" value="${earned}"><button class="btn-main" style="width:auto; padding:10px;" onclick="updateUserBal('${id}', this)">Update</button></div><div style="background:var(--bg); border:1px solid var(--border); border-radius:12px; padding:15px; margin-top:20px; display:flex; justify-content:space-around;"><div><p style="font-size:0.8rem; color:var(--muted);">Total Approved</p><b style="font-size:1.2rem; color:var(--success);">${app}</b></div><div><p style="font-size:0.8rem; color:var(--muted);">Join Date</p><b style="font-size:1.1rem; color:var(--text);">${joinDate}</b></div></div><p style="color:${banned?'var(--danger)':'var(--success)'}; font-weight:800; font-size:1.2rem; margin-top:15px; padding:10px; background:var(--bg); border-radius:10px;">Status: ${banned?'BANNED':'ACTIVE'}</p></div>`; openSubPage('admin-user-details'); }; window.updateUserBal = async (uid, btn) => { let newBal = parseFloat(document.getElementById('edit-u-bal').value); await withLoading(btn, async () => { await updateDoc(doc(db, "users", uid), { earned: newBal }); document.getElementById('modal-u-bal').innerText = newBal.toFixed(2); showToast("Balance updated manually!", "success"); }); }; window.toggleBan = async (uid, banStatus) => { event.stopPropagation(); await updateDoc(doc(db, "users", uid), { banned: banStatus }); showToast("User status updated!", "success"); }; window.openWithdrawDetailsModal = async (docId, uid, name, method, account, amount) => { showToast("Fetching details...", "info"); let uSnap = await getDoc(doc(db, "users", uid)); let uData = uSnap.exists() ? uSnap.data() : {approved: 0, joinDate: 'Unknown'}; let qSub = await getDocs(query(collection(db, "submissions"), where("uid", "==", uid))); document.getElementById('admin-wd-content').innerHTML = `<div class="section-box" style="text-align:center;"><h2 style="font-weight:800; font-size:1.8rem;">${name}</h2><h3 style="color:var(--primary); margin-top:5px; font-size:2rem;">৳ ${amount.toFixed(2)}</h3><p style="color:var(--muted); font-weight:600; margin-bottom:15px;">Method: ${method.toUpperCase()}</p><div class="data-box" onclick="copyData(this, 'w-modal-acc')" style="text-align:left;"><div><div class="data-label">ACCOUNT / ID</div><div class="data-value" id="w-modal-acc" style="font-size:1.2rem;">${account}</div></div><i class="fas fa-copy" style="font-size:1.2rem;"></i></div><div style="margin-top:20px; display:flex; gap:10px;"><button class="btn-main" style="background:var(--success); box-shadow:none;" onclick="processWithdrawModal('${docId}','${uid}',${amount},'approved')">Approve</button><button class="btn-main" style="background:var(--danger); box-shadow:none;" onclick="processWithdrawModal('${docId}','${uid}',${amount},'rejected')">Reject</button></div></div>`; openSubPage('admin-withdraw-details'); }; window.processWithdrawModal = async (docId, uid, amt, status) => { await processWithdraw(docId, uid, amt, status); closeSubPage(); };
         window.saveWithdrawSettings = async (btn) => { await withLoading(btn, async () => { await setDoc(doc(db, "settings", "config"), { wMin: parseFloat(document.getElementById('admin-w-min').value), wMax: parseFloat(document.getElementById('admin-w-max').value), dollarRate: parseFloat(document.getElementById('admin-w-rate').value), wRules: document.getElementById('admin-w-inst').value }, {merge:true}); showToast("Withdraw Config Saved!", "success"); }); }; window.saveAdminNotice = async (btn) => { await withLoading(btn, async () => { await setDoc(doc(db, "settings", "config"), { notice: document.getElementById('admin-notice-input').value, scrollNotice: document.getElementById('admin-scroll-notice-input').value }, {merge:true}); showToast("Notice Updated!", "success"); }); }; window.saveSupportLinks = async (btn) => { await withLoading(btn, async () => { await setDoc(doc(db, "settings", "config"), { tgLink: document.getElementById('admin-tg-link').value, waLink: document.getElementById('admin-wa-link').value, acLink: document.getElementById('admin-ac-link').value, refPercent: parseFloat(document.getElementById('admin-t-ref').value), taskRules: document.getElementById('admin-task-rules-input').value }, {merge:true}); showToast("Config Updated!", "success"); }); };
