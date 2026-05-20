@@ -11,8 +11,24 @@
     <style>
         :root { --primary: #4f46e5; --primary-gradient: linear-gradient(135deg, #4f46e5, #9333ea); --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --muted: #94a3b8; --border: #334155; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --blue: #3b82f6; --info: #0ea5e9; }
         .light-mode { --bg: #f8fafc; --card: #ffffff; --text: #0f172a; --muted: #64748b; --border: #e2e8f0; }
+        
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: var(--text); overflow: hidden; transition: background 0.4s ease; }
+        
+        /* Ultra Modern Background */
+        body { 
+            background-color: var(--bg); 
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(147, 51, 234, 0.12) 0%, transparent 40%);
+            background-attachment: fixed;
+            color: var(--text); overflow: hidden; transition: background 0.4s ease, color 0.4s ease; 
+        }
+        .light-mode body {
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(147, 51, 234, 0.05) 0%, transparent 40%);
+        }
+        
         .page { display: none; height: 100dvh; width: 100%; position: absolute; overflow-y: auto; padding-bottom: 120px; -webkit-overflow-scrolling: touch; }
         .page.active { display: block; animation: fadeSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -60,7 +76,7 @@
         .input-box:focus { border-color: var(--primary); }
         select.input-box { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394a3b8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 1rem top 50%; background-size: 0.65rem auto; }
         
-        .btn-main { background: var(--primary-gradient); color: white; border: none; width: 100%; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; align-items:center; gap: 8px; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.15); }
+        .btn-main { background: var(--primary-gradient); color: white; border: none; width: 100%; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; align-items:center; gap: 8px; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.15); text-decoration: none; }
         .btn-main:active { transform: scale(0.97); } .btn-main:disabled { opacity: 0.7; cursor: not-allowed; }
         
         .data-box { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 15px 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
@@ -115,20 +131,39 @@
         .live-table th, .live-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
         .live-table th { background: rgba(0,0,0,0.2); font-weight: 800; color: var(--primary); }
 
-        /* Feature 1: Scroll Notice Box */
-        .scroll-text-box { background: var(--primary-gradient); color: white; padding: 10px 15px; border-radius: 12px; margin-bottom: 15px; font-weight: 700; font-size: 1rem; overflow: hidden; white-space: nowrap; box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 10px; transition: background 0.4s; }
+        /* Feature 1: Notice Auto Scroll */
+        .scroll-text-box { background: var(--primary-gradient); color: white; padding: 10px 15px; border-radius: 12px; margin-bottom: 15px; font-weight: 700; font-size: 1rem; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 10px; transition: background 0.4s; }
         .scroll-text-box i { font-size: 1.2rem; animation: pulseLogo 2s infinite; }
+        .scroll-wrapper { flex: 1; overflow: hidden; white-space: nowrap; position: relative; display: flex; align-items: center; }
+        .scroll-content { display: inline-block; animation: scrollText 15s linear infinite; font-size: 0.95rem; }
+        @keyframes scrollText { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         
-        /* Feature 5: Ultra Modern Withdraw Input */
+        /* Ultra Modern Withdraw Input */
         .modern-input { width: 100%; background: rgba(255,255,255,0.03); border: 2px solid var(--border); color: var(--text); padding: 18px 20px; border-radius: 16px; outline: none; font-size: 1.1rem; font-weight: 600; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
         .modern-input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15), inset 0 2px 4px rgba(0,0,0,0.1); transform: translateY(-2px); }
         .pay-card { border: 2px solid var(--border); border-radius: 20px; padding: 25px 15px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); background: linear-gradient(145deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02)); cursor: pointer; }
         .pay-card.selected { border-color: transparent !important; background: var(--primary-gradient) !important; color: white !important; transform: translateY(-5px) scale(1.02); box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
         .pay-card.selected i { color: white !important; }
 
-        /* Feature 3: Theme Swatches */
+        /* Theme Swatches */
         .theme-swatch { width: 45px; height: 45px; border-radius: 50%; cursor: pointer; border: 3px solid var(--card); box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.2s; }
         .theme-swatch:active { transform: scale(0.9); }
+        
+        /* Ultra Modern Invite Circles */
+        .ultra-circle { width: 105px; height: 105px; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 2px solid rgba(255,255,255,0.1); box-shadow: 0 0 20px var(--c), inset 0 0 15px rgba(255,255,255,0.05); position: relative; z-index: 1; transition: transform 0.3s, box-shadow 0.3s; }
+        .ultra-circle::before { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 2px dashed var(--c); animation: spinRotate 10s linear infinite; opacity: 0.5; z-index: -1; }
+        @keyframes spinRotate { 100% { transform: rotate(360deg); } }
+        .light-mode .ultra-circle { background: rgba(255,255,255,0.8); box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-color: var(--c); }
+        
+        /* Live Badge for Task Page */
+        .live-badge { display: flex; align-items: center; gap: 6px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: var(--success); padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 800; box-shadow: 0 0 10px rgba(16, 185, 129, 0.2); }
+        .pulse-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); animation: pulseDot 1.5s infinite; }
+        @keyframes pulseDot { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+
+        /* Profile Button Styling */
+        .profile-btn { background: transparent; border-bottom: 1px solid var(--border); border-radius: 0; color: var(--text); justify-content: flex-start; padding: 20px; box-shadow: none; align-items: center; text-decoration: none !important; transition: background 0.3s; gap: 15px; }
+        .profile-btn:hover { background: rgba(79, 70, 229, 0.05); }
+        .profile-btn:last-child { border-bottom: none; }
     </style>
 </head>
 <body>
@@ -181,22 +216,25 @@
                 
                 <div class="scroll-text-box" id="scroll-notice-container" style="display:none;">
                     <i class="fas fa-bolt"></i>
-                    <marquee id="scroll-notice-text">Welcome to Taskesy!</marquee>
+                    <div class="scroll-wrapper"><div class="scroll-content" id="scroll-notice-text">Welcome to Taskesy!</div></div>
                 </div>
 
                 <div class="section-box"><div style="font-weight:800; margin-bottom:10px; color:var(--warning); font-size:1.1rem;"><i class="fas fa-bullhorn"></i> নোটিশবোর্ড</div><p id="user-notice" style="font-size:0.95rem; color:var(--muted); line-height:1.6; font-weight:500;">Loading...</p></div>
                 <div class="section-box"><button class="btn-main" style="background:var(--bg); border:1px solid var(--border); color:var(--text); text-align:left; justify-content:space-between; box-shadow:none;" onclick="document.getElementById('support-menu').classList.toggle('open')"><span><i class="fas fa-headset" style="color:#06b6d4;"></i> Support Center</span> <i class="fas fa-chevron-down"></i></button><div id="support-menu" class="support-options"><a href="#" id="tg-link" style="background:#0088cc; color:white; padding:14px; border-radius:12px; text-decoration:none; display:flex; justify-content:center; gap:8px; font-weight:700;" target="_blank"><i class="fab fa-telegram"></i> Telegram Channel</a><a href="#" id="wa-link" style="background:#25D366; color:white; padding:14px; border-radius:12px; text-decoration:none; display:flex; justify-content:center; gap:8px; font-weight:700;" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp Admin</a><a href="#" id="ac-link" style="background:var(--danger); color:white; padding:14px; border-radius:12px; text-decoration:none; display:flex; justify-content:center; gap:8px; font-weight:700;" target="_blank"><i class="fas fa-user-shield"></i> Admin Contact</a></div></div>
-                <div class="section-box" style="cursor:pointer; border-color:var(--primary); background:rgba(79, 70, 229, 0.05);" onclick="openSubPage('referral-page')"><div style="display:flex; justify-content:space-between; align-items:center;"><div><h4 style="color:var(--primary); font-weight:800; font-size:1.1rem;"><i class="fas fa-user-plus"></i> Invite Your Friends</h4><p style="font-size:0.85rem; color:var(--muted); font-weight:600; margin-top:3px;">Earn extra commission by referring!</p></div><i class="fas fa-chevron-right" style="color:var(--primary);"></i></div></div>
             </div>
         </div>
 
-        <div id="referral-page" class="custom-modal"><header class="header"><h2 onclick="closeSubPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Invite Friends</h2></header><div class="container"><h3 style="text-align:center; margin-bottom:10px; font-weight:800;">Referral Program</h3><p style="text-align:center; color:var(--muted); margin-bottom:25px; font-weight:600;">Earn <span id="ref-percent-display" style="color:var(--primary); font-weight:800;">10</span>% commission on your friends' approved tasks!</p><div style="display:flex; justify-content:space-around; gap:10px; margin-bottom:30px;"><div style="width:105px; height:105px; border-radius:50%; border:5px solid var(--primary); display:flex; flex-direction:column; justify-content:center; align-items:center; background:var(--card); box-shadow:0 5px 15px rgba(0,0,0,0.1);"><span style="font-size:1.3rem; font-weight:800; color:var(--text);" id="ref-total-earn">৳ 0</span><span style="font-size:0.75rem; color:var(--muted); font-weight:600;">Commission</span></div><div style="width:105px; height:105px; border-radius:50%; border:5px solid var(--success); display:flex; flex-direction:column; justify-content:center; align-items:center; background:var(--card); box-shadow:0 5px 15px rgba(0,0,0,0.1);"><span style="font-size:1.3rem; font-weight:800; color:var(--text);" id="ref-today-earn">৳ 0</span><span style="font-size:0.75rem; color:var(--muted); font-weight:600;">Today Earn</span></div><div style="width:105px; height:105px; border-radius:50%; border:5px solid var(--warning); display:flex; flex-direction:column; justify-content:center; align-items:center; background:var(--card); box-shadow:0 5px 15px rgba(0,0,0,0.1);"><span style="font-size:1.3rem; font-weight:800; color:var(--text);" id="ref-user-count">0</span><span style="font-size:0.75rem; color:var(--muted); font-weight:600;">Users</span></div></div><div class="section-box" style="text-align:center;"><i class="fas fa-gift" style="font-size:2.5rem; color:var(--primary); margin-bottom:15px;"></i><p style="font-size:0.95rem; font-weight:600; margin-bottom:15px;">Share this link with your friends to start earning.</p><div class="data-box" onclick="copyData(this, 'ref-link-text')" style="background:var(--bg); border:2px dashed var(--primary); padding:15px;"><div id="ref-link-text" style="font-size:0.85rem; word-break:break-all; font-weight:600; text-align:left; color:var(--text);">Loading link...</div><i class="fas fa-copy" style="color:var(--primary); font-size:1.2rem;"></i></div></div></div></div>
+        <div id="referral-page" class="custom-modal"><header class="header"><h2 onclick="closeSubPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Invite Friends</h2></header><div class="container"><h3 style="text-align:center; margin-bottom:10px; font-weight:800;">Referral Program</h3><p style="text-align:center; color:var(--muted); margin-bottom:30px; font-weight:600;">Earn <span id="ref-percent-display" style="color:var(--primary); font-weight:800;">10</span>% commission on your friends' approved tasks!</p><div style="display:flex; justify-content:space-around; gap:10px; margin-bottom:35px;"><div class="ultra-circle" style="--c: var(--primary);"><span style="font-size:1.3rem; font-weight:800; color:var(--text);" id="ref-total-earn">৳ 0</span><span style="font-size:0.75rem; color:var(--muted); font-weight:600;">Commission</span></div><div class="ultra-circle" style="--c: var(--success);"><span style="font-size:1.3rem; font-weight:800; color:var(--text);" id="ref-today-earn">৳ 0</span><span style="font-size:0.75rem; color:var(--muted); font-weight:600;">Today Earn</span></div><div class="ultra-circle" style="--c: var(--warning);"><span style="font-size:1.3rem; font-weight:800; color:var(--text);" id="ref-user-count">0</span><span style="font-size:0.75rem; color:var(--muted); font-weight:600;">Users</span></div></div><div class="section-box" style="text-align:center;"><i class="fas fa-gift" style="font-size:2.5rem; color:var(--primary); margin-bottom:15px;"></i><p style="font-size:0.95rem; font-weight:600; margin-bottom:15px;">Share this link with your friends to start earning.</p><div class="data-box" onclick="copyData(this, 'ref-link-text')" style="background:var(--bg); border:2px dashed var(--primary); padding:15px;"><div id="ref-link-text" style="font-size:0.85rem; word-break:break-all; font-weight:600; text-align:left; color:var(--text);">Loading link...</div><i class="fas fa-copy" style="color:var(--primary); font-size:1.2rem;"></i></div></div></div></div>
+        
         <div id="top-page" class="page"><div class="container"><h3 style="margin-bottom: 15px; font-size:1.4rem; font-weight:800;"><i class="fas fa-trophy" style="color:gold;"></i> রিয়েলটাইম লিডারবোর্ড</h3><div class="leaderboard-list" id="leaderboard-container"></div></div></div>
         
         <div id="task-page" class="page">
             <div class="container">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
-                    <h3 style="font-size:1.4rem; font-weight:800;">Available Tasks</h3>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <h3 style="font-size:1.4rem; font-weight:800;">Tasks</h3>
+                        <div class="live-badge"><span class="pulse-dot"></span> Live Trusted</div>
+                    </div>
                     <button onclick="openSubPage('task-rules-page')" style="background:rgba(239, 68, 68, 0.1); color:var(--danger); border:1px solid var(--danger); padding:6px 12px; border-radius:8px; font-weight:700; cursor:pointer;"><i class="fas fa-book-open"></i> Rules</button>
                 </div>
                 <div id="task-list-container"><div style="text-align:center; padding:20px; color:var(--muted);"><i class="fas fa-spinner fa-spin"></i> Loading Tasks...</div></div>
@@ -215,7 +253,7 @@
 
         <div id="wallet-page" class="page">
             <div class="container">
-                <div style="width: 170px; height: 170px; border: 8px solid var(--primary); border-radius: 50%; margin: 10px auto 25px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                <div style="width: 170px; height: 170px; border: 8px solid var(--primary); border-radius: 50%; margin: 10px auto 25px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.15); background: var(--bg);">
                     <span style="color:var(--muted); font-size:0.9rem; font-weight:600;">Current Balance</span>
                     <h2 id="wallet-bal" style="font-size: 2.2rem; color:var(--primary); margin-top:5px; font-weight:800;">৳ 0.00</h2>
                 </div>
@@ -244,7 +282,24 @@
         <div id="profile-page" class="page">
             <div class="container">
                 <div style="text-align: center; padding: 25px 0;"><div class="pro-avatar" id="u-initial">U</div><h2 id="u-fullname" style="font-size:1.8rem; font-weight:800; color:var(--text);">Name</h2><p id="u-email" style="color:var(--muted); font-size:1rem; margin-top:5px; font-weight:500;">Email</p></div>
-                <div style="background:var(--card); border-radius:18px; border:1px solid var(--border); box-shadow:0 10px 25px rgba(0,0,0,0.1); overflow:hidden; margin-top:10px;"><a href="javascript:void(0)" class="btn-main" style="background:transparent; border-bottom:1px solid var(--border); border-radius:0; color:var(--text); justify-content:flex-start; padding:22px 20px; box-shadow:none; align-items:center;" onclick="openSubPage('withdraw-history-page')"><i class="fas fa-history" style="width:40px; font-size:1.4rem; color:var(--primary);"></i> <span style="font-weight:700; font-size:1.15rem;">Withdraw History</span></a><a href="javascript:void(0)" class="btn-main" style="background:transparent; border-bottom:1px solid var(--border); border-radius:0; color:var(--text); justify-content:flex-start; padding:22px 20px; box-shadow:none; align-items:center;" onclick="openSubPage('settings-page')"><i class="fas fa-cog" style="width:40px; font-size:1.4rem; color:var(--muted);"></i> <span style="font-weight:700; font-size:1.15rem;">Settings</span></a><a href="javascript:void(0)" class="btn-main" style="background:transparent; color:var(--danger); justify-content:flex-start; padding:22px 20px; box-shadow:none; align-items:center;" onclick="logoutUser()"><i class="fas fa-sign-out-alt" style="width:40px; font-size:1.4rem;"></i> <span style="font-weight:700; font-size:1.15rem;">Logout</span></a></div>
+                <div style="background:var(--card); border-radius:18px; border:1px solid var(--border); box-shadow:0 10px 25px rgba(0,0,0,0.1); overflow:hidden; margin-top:10px; display: flex; flex-direction: column;">
+                    <a href="javascript:void(0)" class="btn-main profile-btn" onclick="openSubPage('referral-page')">
+                        <i class="fas fa-user-plus" style="width:40px; font-size:1.4rem; color:var(--success); text-align:center;"></i> 
+                        <span style="font-weight:700; font-size:1.15rem;">Invite Friends</span>
+                    </a>
+                    <a href="javascript:void(0)" class="btn-main profile-btn" onclick="openSubPage('withdraw-history-page')">
+                        <i class="fas fa-history" style="width:40px; font-size:1.4rem; color:var(--primary); text-align:center;"></i> 
+                        <span style="font-weight:700; font-size:1.15rem;">Withdraw History</span>
+                    </a>
+                    <a href="javascript:void(0)" class="btn-main profile-btn" onclick="openSubPage('settings-page')">
+                        <i class="fas fa-cog" style="width:40px; font-size:1.4rem; color:var(--muted); text-align:center;"></i> 
+                        <span style="font-weight:700; font-size:1.15rem;">Settings</span>
+                    </a>
+                    <a href="javascript:void(0)" class="btn-main profile-btn" style="color:var(--danger);" onclick="logoutUser()">
+                        <i class="fas fa-sign-out-alt" style="width:40px; font-size:1.4rem; text-align:center;"></i> 
+                        <span style="font-weight:700; font-size:1.15rem;">Logout</span>
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -385,7 +440,9 @@
         const adminEmails = ["mdwld2005@gmail.com", "newadmin@gmail.com"]; const defaultRefUid = "kIxdKf65uhcJhE7IJ1YGD0CDcjt1";
         const fnameDB = ["Aarav", "Vihaan", "Aditya", "Sai", "Arjun", "Rahul", "Amit", "Mohammad", "Abdullah", "John", "David", "Rahim", "Karim", "Tariqul", "Liam", "Hasan", "Imran", "Ahsanullah", "Zahid", "Kazi", "Sumon", "Jubayer", "Rubel", "Mahbub", "James", "Tanvir", "Ratul", "Rafiqul", "Ashikur", "Mehedi", "Nazmul", "Fatima", "Ayesha", "Nusrat", "Marium", "Emma", "Sophia", "Olivia", "Farzana", "Sonia", "Isabella", "Samiha"];
         const lnameDB = ["Roy", "Das", "Sen", "Kumar", "Patel", "Bose", "Hasan", "Ali", "Noman", "Tuz", "Siddiqa", "Smith", "Miller", "Uddin", "Bakhsh", "Jahan", "Begum", "Islam", "Johnson", "Williams", "Khan", "Brown", "Davis", "Mia", "Khatun", "Alam", "Wilson", "Martinez", "Ahmed", "Sikder", "Rahman", "Huda"];
-        const colOptions = ["Username", "Password", "2FA Code", "Cookies", "UID", "First Name", "Last Name", "Full Name", "Generated Email", "Recovery Email", "Task ID"];
+        
+        // Added new specific column format format
+        const colOptions = ["Username", "Password", "2FA Code", "Cookies", "UID", "First Name", "Last Name", "Full Name", "Generated Email", "Recovery Email", "Task ID", "Username|Password|Cookies"];
 
         async function withLoading(btnEl, asyncFn) { if(!btnEl || btnEl.disabled) return; let originalText = btnEl.innerHTML; btnEl.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Wait...`; btnEl.disabled = true; try { await asyncFn(); } catch(e) { console.error(e); } finally { btnEl.innerHTML = originalText; btnEl.disabled = false; } }
         window.addEventListener('popstate', (e) => { document.querySelectorAll('.custom-modal').forEach(m => m.classList.remove('active')); let targetPage = (currentUser && adminEmails.includes(currentUser.email)) ? 'admin-home' : 'home-page'; if (e.state && e.state.page) targetPage = e.state.page; let pEl = document.getElementById(targetPage); if (pEl && pEl.classList.contains('page')) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); pEl.classList.add('active'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); let navLink = document.querySelector(`.nav-item[onclick*="${targetPage}"]`); if(navLink) navLink.classList.add('active'); } });
@@ -408,7 +465,19 @@
         });
 
         async function checkOrCreateUserDoc(user) { const userRef = doc(db, "users", user.uid); const snap = await getDoc(userRef); let refId = localStorage.getItem('referrerId'); if (refId === user.uid) refId = null; if (!snap.exists()) { let finalRefId = refId || defaultRefUid; if (user.uid === defaultRefUid || user.email === "ajmirrahman84@gmail.com") finalRefId = null; userDocData = { name: user.displayName, email: user.email, photo: user.photoURL, approved: 0, rejected: 0, earned: 0, pending: 0, processing: 0, withdrawStatus: "None", withdrawn: 0, banned: false, joinDate: new Date().toLocaleDateString('en-GB'), referrerId: finalRefId, refEarn: 0, refToday: 0, refCount: 0, tgJoined: false }; await setDoc(userRef, userDocData); if(finalRefId) { await updateDoc(doc(db, "users", finalRefId), { refCount: increment(1) }).catch(e=>console.log(e)); } localStorage.removeItem('referrerId'); } else { userDocData = snap.data(); let updates = { name: user.displayName, photo: user.photoURL }; if (!userDocData.referrerId && user.uid !== defaultRefUid && user.email !== "ajmirrahman84@gmail.com") { updates.referrerId = defaultRefUid; await updateDoc(doc(db, "users", defaultRefUid), { refCount: increment(1) }).catch(e=>console.log(e)); userDocData.referrerId = defaultRefUid; } await updateDoc(userRef, updates); localStorage.removeItem('referrerId'); } }
-        function updateProfileUI(user) { let initial = user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U'; document.getElementById('u-initial').innerText = initial; document.getElementById('u-fullname').innerText = user.displayName; document.getElementById('u-email').innerText = user.email; document.getElementById('setting-name-input').value = user.displayName; }
+        
+        function updateProfileUI(user) { 
+            let initial = user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U'; 
+            document.getElementById('u-initial').innerText = initial; 
+            document.getElementById('u-fullname').innerText = user.displayName; 
+            document.getElementById('u-email').innerText = user.email; 
+            document.getElementById('setting-name-input').value = user.displayName; 
+            
+            // Update Welcome Card Home page Name
+            let homeName = document.getElementById('u-name');
+            if (homeName) homeName.innerText = user.displayName || 'User';
+        }
+        
         function listenToUserStats(uid) { onSnapshot(doc(db, "users", uid), (docSnap) => { if(docSnap.exists()){ let d = docSnap.data(); userDocData = d; if(d.banned) { logoutUser(); alert("You are banned!"); return; } document.getElementById('stat-app').innerText = d.approved || 0; document.getElementById('stat-earn').innerText = "৳ " + parseFloat(d.earned||0).toFixed(2); document.getElementById('wallet-bal').innerText = "৳ " + parseFloat(d.earned||0).toFixed(2); document.getElementById('stat-pend').innerText = d.pending || 0; document.getElementById('stat-proc').innerText = d.processing || 0; document.getElementById('stat-with').innerText = d.withdrawStatus || "None"; document.getElementById('ref-total-earn').innerText = "৳ " + (d.refEarn||0).toFixed(2); document.getElementById('ref-today-earn').innerText = "৳ " + (d.refToday||0).toFixed(2); document.getElementById('ref-user-count').innerText = d.refCount||0; } }); }
         function setupReferralPage(uid) { document.getElementById('ref-link-text').innerText = window.location.origin + window.location.pathname + "?ref=" + uid; }
         function listenToLeaderboard() { onSnapshot(query(collection(db, "users"), orderBy("approved", "desc"), limit(20)), (snap) => { let html = ''; let rank = 1; snap.forEach(docSnap => { let d = docSnap.data(); if(d.approved > 0 && !d.banned) { let isMe = docSnap.id === currentUser.uid ? 'me' : ''; let nameTxt = docSnap.id === currentUser.uid ? 'আপনি' : d.name; html += `<div class="lb-item ${isMe}"><span class="lb-rank">${rank}</span><div class="lb-user"><img src="${d.photo||'https://via.placeholder.com/100'}"> ${nameTxt}</div><span class="lb-score">${d.approved} Tasks</span></div>`; rank++; } }); document.getElementById('leaderboard-container').innerHTML = html || '<p style="text-align:center; color:var(--muted); padding:20px; font-weight:600;">No ranks yet.</p>'; }); }
@@ -543,7 +612,27 @@
         window.saveWithdrawSettings = async (btn) => { await withLoading(btn, async () => { await setDoc(doc(db, "settings", "config"), { wMin: parseFloat(document.getElementById('admin-w-min').value), wMax: parseFloat(document.getElementById('admin-w-max').value), dollarRate: parseFloat(document.getElementById('admin-w-rate').value), wRules: document.getElementById('admin-w-inst').value }, {merge:true}); showToast("Withdraw Config Saved!", "success"); }); }; window.saveAdminNotice = async (btn) => { await withLoading(btn, async () => { await setDoc(doc(db, "settings", "config"), { notice: document.getElementById('admin-notice-input').value, scrollNotice: document.getElementById('admin-scroll-notice-input').value }, {merge:true}); showToast("Notice Updated!", "success"); }); }; window.saveSupportLinks = async (btn) => { await withLoading(btn, async () => { await setDoc(doc(db, "settings", "config"), { tgLink: document.getElementById('admin-tg-link').value, waLink: document.getElementById('admin-wa-link').value, acLink: document.getElementById('admin-ac-link').value, refPercent: parseFloat(document.getElementById('admin-t-ref').value), taskRules: document.getElementById('admin-task-rules-input').value }, {merge:true}); showToast("Config Updated!", "success"); }); };
         window.processWithdraw = async (docId, uid, amt, status) => { await updateDoc(doc(db, "withdrawals", docId), { status: status }); if(status === 'approved') { await updateDoc(doc(db, "users", uid), { withdrawStatus: "Approved", withdrawn: increment(amt) }); } if(status === 'rejected') { await updateDoc(doc(db, "users", uid), { earned: increment(amt), withdrawStatus: "Rejected (Refunded)" }); } showToast(`Withdraw ${status}!`, "success"); }; window.processTaskReports = async (action, btn) => { let idsText = action === 'approve' ? document.getElementById('admin-approved-ids').value : document.getElementById('admin-rejected-ids').value; let taskIds = idsText.match(/WP-\d+/g); if(!taskIds) return showToast("No valid Task IDs!", "error"); showToast(`Processing ${action}...`, "info"); let successCount = 0; await withLoading(btn, async () => { const subsRef = collection(db, "submissions"); for(let tId of taskIds) { const querySnapshot = await getDocs(query(subsRef, where("taskId", "==", tId), where("status", "in", ["pending", "processing"]))); querySnapshot.forEach(async (docSnap) => { let taskData = docSnap.data(); if(action === 'approve') { await updateDoc(doc(db, "submissions", docSnap.id), { status: "approved" }); let upds = { approved: increment(1), earned: increment(taskData.price) }; if(taskData.status === 'pending') upds.pending = increment(-1); if(taskData.status === 'processing') upds.processing = increment(-1); await updateDoc(doc(db, "users", taskData.uid), upds); let uSnap = await getDoc(doc(db, "users", taskData.uid)); if(uSnap.exists() && uSnap.data().referrerId) { let refId = uSnap.data().referrerId; let commission = taskData.price * ((globalTaskConfig.refPercent || 10) / 100); await updateDoc(doc(db, "users", refId), { earned: increment(commission), refEarn: increment(commission), refToday: increment(commission) }).catch(e=>console.log("Ref Error:", e)); } } else if (action === 'reject') { await updateDoc(doc(db, "submissions", docSnap.id), { status: "rejected" }); let upds = { rejected: increment(1) }; if(taskData.status === 'pending') upds.pending = increment(-1); if(taskData.status === 'processing') upds.processing = increment(-1); await updateDoc(doc(db, "users", taskData.uid), upds); } successCount++; }); } showToast(`Successfully ${action}d ${successCount} tasks!`, "success"); if(action==='approve') document.getElementById('admin-approved-ids').value=''; else document.getElementById('admin-rejected-ids').value=''; }); }; window.cleanDuplicateTasks = async (btn) => { showToast("Scanning duplicates...", "info"); await withLoading(btn, async () => { const q = query(collection(db, "submissions"), where("status", "in", ["pending", "processing"])); const snap = await getDocs(q); let seenTasks = new Set(); let duplicates = []; snap.forEach(docSnap => { let tid = docSnap.data().taskId; if(seenTasks.has(tid)) { duplicates.push(docSnap.ref); } else { seenTasks.add(tid); } }); if(duplicates.length === 0) return showToast("No duplicates found!", "success"); let batch = writeBatch(db); duplicates.forEach(ref => batch.delete(ref)); await batch.commit(); showToast(`Cleaned ${duplicates.length} duplicate tasks!`, "success"); }); }; window.resetAllData = async (btn) => { let conf1 = confirm("⚠️ WARNING! This will delete ALL Submissions, Withdrawals, and Report History. Proceed?"); if(!conf1) return; let check = prompt("Type 'YES' to confirm Factory Reset:"); if(check !== "YES") return showToast("Cancelled", "error"); await withLoading(btn, async () => { showToast("Wiping Data...", "info"); let batch = writeBatch(db); let count = 0; const delDocs = async (collName) => { const s = await getDocs(collection(db, collName)); s.forEach(d => { batch.delete(d.ref); count++; if(count%400===0){batch.commit(); batch = writeBatch(db);} }); }; await delDocs("submissions"); await delDocs("withdrawals"); await delDocs("reports"); const uSnap = await getDocs(collection(db, "users")); uSnap.forEach(d => { batch.update(d.ref, { approved: 0, pending: 0, processing: 0, rejected: 0, withdrawn: 0, withdrawStatus: "None", refToday: 0 }); count++; if(count%400===0){batch.commit(); batch = writeBatch(db);} }); await batch.commit(); showToast("Factory Reset Complete!", "success"); }); };
 
-        window.formatReportData = (docData, taskId, taskName) => { let cols = sheetConfigs[taskId]?.cols || ["Username", "Password", "2FA Code", "Task ID"]; let obj = {}; cols.forEach(col => { if(col === 'Username') obj[col] = docData.username || ''; else if(col === 'Password') obj[col] = docData.password || ''; else if(col === '2FA Code') obj[col] = docData.secret2fa || ''; else if(col === 'Cookies') obj[col] = docData.cookie || ''; else if(col === 'UID') obj[col] = docData.fbUid || ''; else if(col === 'First Name') obj[col] = docData.firstName || ''; else if(col === 'Last Name') obj[col] = docData.lastName || ''; else if(col === 'Full Name') obj[col] = docData.fullName || ''; else if(col === 'Recovery Email') obj[col] = docData.recoveryMail || ''; else if(col === 'Generated Email') obj[col] = docData.generatedEmail || ''; else if(col === 'Task ID') obj[col] = docData.taskId || ''; else obj[col] = docData[col] || ''; }); return obj; };
+        window.formatReportData = (docData, taskId, taskName) => { 
+            let cols = sheetConfigs[taskId]?.cols || ["Username", "Password", "2FA Code", "Task ID"]; 
+            let obj = {}; 
+            cols.forEach(col => { 
+                if(col === 'Username') obj[col] = docData.username || ''; 
+                else if(col === 'Password') obj[col] = docData.password || ''; 
+                else if(col === '2FA Code') obj[col] = docData.secret2fa || ''; 
+                else if(col === 'Cookies') obj[col] = docData.cookie || ''; 
+                else if(col === 'UID') obj[col] = docData.fbUid || ''; 
+                else if(col === 'First Name') obj[col] = docData.firstName || ''; 
+                else if(col === 'Last Name') obj[col] = docData.lastName || ''; 
+                else if(col === 'Full Name') obj[col] = docData.fullName || ''; 
+                else if(col === 'Recovery Email') obj[col] = docData.recoveryMail || ''; 
+                else if(col === 'Generated Email') obj[col] = docData.generatedEmail || ''; 
+                else if(col === 'Task ID') obj[col] = docData.taskId || ''; 
+                else if(col === 'Username|Password|Cookies') obj[col] = (docData.username||'') + '|' + (docData.password||'') + '|' + (docData.cookie||'');
+                else obj[col] = docData[col] || ''; 
+            }); 
+            return obj; 
+        };
+        
         window.renderLiveSheets = () => { let container = document.getElementById('live-sheets-container'); let html = ''; let groups = {}; liveSubmissions.forEach(sub => { let sheetKey = sub.activeTaskId; if(!groups[sheetKey]) groups[sheetKey] = { id: sheetKey, name: sub.taskName || 'Unknown Task', data: [] }; groups[sheetKey].data.push(formatReportData(sub, sub.activeTaskId, sub.taskName)); }); if(Object.keys(groups).length === 0) { container.innerHTML = '<p style="text-align:center; color:var(--muted);">No active pending tasks to display.</p>'; return; } for(let [tId, group] of Object.entries(groups)) { html += `<div class="section-box" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; border-left: 4px solid var(--primary);" onclick="openSingleLiveSheet('${tId}')"><div style="display:flex; align-items:center; gap:15px;"><i class="fas fa-file-excel" style="font-size:2rem; color:var(--success);"></i><div><b style="font-size:1.1rem; color:var(--primary);">${group.name}</b><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">${group.data.length} Submissions</p></div></div><i class="fas fa-chevron-right" style="color:var(--muted);"></i></div>`; } container.innerHTML = html; window.currentLiveGroups = groups; };
         window.openSingleLiveSheet = (tId) => { let group = window.currentLiveGroups[tId]; if(!group) return; document.getElementById('live-sheet-title').innerText = group.name; let html = `<div class="live-table-wrapper"><table class="live-table"><thead><tr>`; let cols = sheetConfigs[tId]?.cols || ["Username", "Password", "2FA Code", "Task ID"]; cols.forEach(col => { html += `<th>${col}</th>`; }); html += `</tr></thead><tbody>`; group.data.forEach(row => { html += `<tr>`; cols.forEach(col => html += `<td>${row[col]||'-'}</td>`); html += `</tr>`; }); html += `</tbody></table></div>`; document.getElementById('single-sheet-container').innerHTML = html; document.getElementById('dl-single-sheet-btn').onclick = () => downloadSingleSheet(tId, group.name); openSubPage('admin-live-sheet-view'); };
         window.downloadSingleSheet = (tId, name) => { let group = window.currentLiveGroups[tId]; if(!group || group.data.length === 0) return; let cols = sheetConfigs[tId]?.cols || ["Username", "Password", "2FA Code", "Task ID"]; const ws = XLSX.utils.json_to_sheet(group.data, { header: cols }); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Data"); XLSX.writeFile(wb, `Taskesy_${name.replace(/\s+/g, '_')}_Live.xlsx`); showToast("Downloaded!", "success"); };
