@@ -165,6 +165,14 @@
         .profile-btn { background: transparent; border-bottom: 1px solid var(--border); border-radius: 0; color: var(--text); justify-content: flex-start; padding: 20px; box-shadow: none; align-items: center; text-decoration: none !important; transition: background 0.3s; gap: 15px; }
         .profile-btn:hover { background: rgba(79, 70, 229, 0.05); }
         .profile-btn:last-child { border-bottom: none; }
+        
+        /* Withdraw Bird Animation */
+        @keyframes flyWithdrawBird {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            20% { opacity: 1; transform: translate(-30%, -60%) scale(1.2) rotate(-15deg); }
+            100% { opacity: 0; transform: translate(150%, -150%) scale(2) rotate(15deg); }
+        }
+        .bird-flying { display: block !important; animation: flyWithdrawBird 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
     </style>
 </head>
 <body>
@@ -174,6 +182,10 @@
         <div class="bg-shape shape-2"></div>
         <div class="bg-shape shape-3"></div>
         <div class="bg-shape shape-4"></div>
+    </div>
+    
+    <div id="withdraw-bird" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); z-index:99999; font-size:4rem; color:var(--primary); pointer-events:none; text-shadow:0 10px 20px rgba(0,0,0,0.3);">
+        <i class="fas fa-dove"></i>
     </div>
 
     <div id="splash-screen">
@@ -308,7 +320,7 @@
                         <i class="fas fa-user-plus" style="width:40px; font-size:1.4rem; color:var(--success); text-align:center;"></i> 
                         <span style="font-weight:700; font-size:1.15rem;">Invite Friends</span>
                     </a>
-                    <a href="javascript:void(0)" class="btn-main profile-btn" onclick="openSubPage('task-history-page'); loadTaskHistory()">
+                    <a href="javascript:void(0)" class="btn-main profile-btn" onclick="openSubPage('task-history-page')">
                         <i class="fas fa-list-alt" style="width:40px; font-size:1.4rem; color:var(--info); text-align:center;"></i> 
                         <span style="font-weight:700; font-size:1.15rem;">Task History</span>
                     </a>
@@ -475,11 +487,11 @@
 
         window.getUserAvatar = (approvedCount, fallbackPhoto, name) => {
             let count = approvedCount || 0;
-            if (count >= 1 && count <= 10) return 'https://cdn-icons-png.flaticon.com/512/3233/3233483.png'; // Soldier
-            if (count >= 11 && count <= 50) return 'https://cdn-icons-png.flaticon.com/512/2205/2205128.png'; // Commander
-            if (count >= 51 && count <= 100) return 'https://cdn-icons-png.flaticon.com/512/4140/4140061.png'; // Minister
-            if (count >= 101 && count <= 200) return 'https://cdn-icons-png.flaticon.com/512/4140/4140047.png'; // Prime Minister
-            if (count > 200) return 'https://cdn-icons-png.flaticon.com/512/3135/3135767.png'; // King
+            if (count >= 1 && count <= 10) return 'https://cdn-icons-png.flaticon.com/512/3233/3233483.png'; 
+            if (count >= 11 && count <= 50) return 'https://cdn-icons-png.flaticon.com/512/2205/2205128.png'; 
+            if (count >= 51 && count <= 100) return 'https://cdn-icons-png.flaticon.com/512/4140/4140061.png'; 
+            if (count >= 101 && count <= 200) return 'https://cdn-icons-png.flaticon.com/512/4140/4140047.png'; 
+            if (count > 200) return 'https://cdn-icons-png.flaticon.com/512/3135/3135767.png'; 
             return fallbackPhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(name || 'User')}&background=random&color=fff`;
         };
         
@@ -508,7 +520,7 @@
             if (user) {
                 currentUser = user;
                 if (adminEmails.includes(user.email)) { document.getElementById('admin-app').style.display = 'block'; history.replaceState({page: 'admin-home'}, null, "#admin-home"); document.getElementById('admin-home').classList.add('active'); setupAdminData(); listenToAdminRealtime(); listenToTasks(); listenToSheetConfig(); showToast('Welcome Admin Pro', 'success'); } 
-                else { await checkOrCreateUserDoc(user); if(userDocData.banned) { logoutUser(); showToast("Your account is banned!", "error"); return; } document.getElementById('user-app').style.display = 'block'; history.replaceState({page: 'home-page'}, null, "#home-page"); document.getElementById('home-page').classList.add('active'); updateProfileUI(user); listenToUserStats(user.uid); listenToGlobalConfig(); listenToTasks(); listenToLeaderboard(); listenToWithdrawHistory(user.uid); setupReferralPage(user.uid); showToast(`Welcome back, ${user.displayName||'User'}!`, 'success'); }
+                else { await checkOrCreateUserDoc(user); if(userDocData.banned) { logoutUser(); showToast("Your account is banned!", "error"); return; } document.getElementById('user-app').style.display = 'block'; history.replaceState({page: 'home-page'}, null, "#home-page"); document.getElementById('home-page').classList.add('active'); updateProfileUI(user); listenToUserStats(user.uid); listenToGlobalConfig(); listenToTasks(); listenToLeaderboard(); listenToWithdrawHistory(user.uid); listenToTaskHistory(user.uid); setupReferralPage(user.uid); showToast(`Welcome back, ${user.displayName||'User'}!`, 'success'); }
             } else { document.getElementById('user-app').style.display = 'none'; document.getElementById('admin-app').style.display = 'none'; document.getElementById('login-page').classList.add('active'); }
         });
 
@@ -603,18 +615,18 @@
         window.openTaskModal = (taskId) => {
             activeTaskObj = currentActiveTasks.find(t => t.id === taskId); if(!activeTaskObj) return showToast("Task not found!", "error");
             
-            // Using Faker.js for names (with a very simple fallback array just in case)
-            let fallbackFnames = ["Aarav", "John", "Liam", "Hasan", "Sumon", "Emma", "Olivia", "Rahul"];
-            let fallbackLnames = ["Roy", "Smith", "Islam", "Khan", "Ahmed", "Wilson", "Davis"];
+            let fallbackFnames = ["Aarav", "John", "Liam", "Hasan", "Sumon", "Emma", "Olivia", "Rahul", "Malek", "Fatema", "Kongsho"];
+            let fallbackLnames = ["Roy", "Smith", "Islam", "Khan", "Ahmed", "Wilson", "Davis", "Sikdar", "Gazi", "Bani"];
             let fname = typeof faker !== 'undefined' ? faker.name.firstName().replace(/[^a-zA-Z]/g, '') : fallbackFnames[Math.floor(Math.random() * fallbackFnames.length)];
             let lname = typeof faker !== 'undefined' ? faker.name.lastName().replace(/[^a-zA-Z]/g, '') : fallbackLnames[Math.floor(Math.random() * fallbackLnames.length)];
             
-            // Generate 100% Unique Username
-            let randomNum = Math.floor(10000 + Math.random() * 90000);
-            let timeHash = Date.now().toString(36).slice(-4);
-            let uname = fname.toLowerCase() + "_" + lname.toLowerCase() + randomNum + "_" + timeHash;
+            let separators = ['.', '_', ''];
+            let sep = separators[Math.floor(Math.random() * separators.length)];
+            let randomNum = Math.floor(10 + Math.random() * 9999);
+            let rawUname = fname.toLowerCase() + sep + lname.toLowerCase() + randomNum;
+            let uname = rawUname.substring(0, 30); 
             
-            let genGmail = fname.toLowerCase() + lname.toLowerCase() + Math.floor(100+Math.random()*900) + "@gmail.com";
+            let genGmail = (fname.toLowerCase() + lname.toLowerCase() + Math.floor(100+Math.random()*900) + "@gmail.com").substring(0, 40);
             generatedTaskId = "WP-" + Math.floor(10000 + Math.random() * 90000);
             
             document.getElementById('current-task-id').innerText = "Task ID: " + generatedTaskId; document.getElementById('task-firstname').innerText = fname; document.getElementById('task-lastname').innerText = lname; document.getElementById('task-fullname').innerText = fname + " " + lname; document.getElementById('task-username').innerText = uname; document.getElementById('task-gengmail').innerText = genGmail; document.getElementById('task-password').innerText = activeTaskObj.password || 'N/A'; document.getElementById('modal-task-name').innerHTML = `<i class="fas fa-tasks"></i> ${activeTaskObj.name}`;
@@ -653,36 +665,49 @@
         window.startTgTask = (link, btn) => { if(!link) return showToast("No link available", "error"); window.open(link, '_blank'); let tgBtn = btn.nextElementSibling; if(tgBtn && tgBtn.id.startsWith('tg-verify-btn')) tgBtn.style.display = 'flex'; };
         window.verifyTgTask = async (taskId, price, btn) => { await withLoading(btn, async () => { await new Promise(r => setTimeout(r, 2000)); await updateDoc(doc(db, "users", currentUser.uid), { tgJoined: true, earned: increment(price) }); showToast("Verification Success! Reward added.", "success"); btn.parentElement.style.display = 'none'; }); };
 
-        // User Task History Loader (Fixed Infinite Loading)
-        window.loadTaskHistory = async () => {
-            const container = document.getElementById('task-history-list');
-            container.innerHTML = '<div style="text-align:center; padding:20px; color:var(--muted);"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
-            try {
-                const q = query(collection(db, "submissions"), where("uid", "==", currentUser.uid));
-                const snap = await getDocs(q);
-                let html = ''; let tasks = [];
+        // User Real-time Task History Listener
+        function listenToTaskHistory(uid) {
+            onSnapshot(query(collection(db, "submissions"), where("uid", "==", uid)), (snap) => {
+                let container = document.getElementById('task-history-list');
+                if(!container) return;
+                let tasks = [];
                 snap.forEach(d => tasks.push(d.data()));
-                tasks.sort((a,b) => new Date(b.time) - new Date(a.time));
-                let total = tasks.length;
-                tasks.forEach((d, i) => {
-                    let taskNameDisplay = d.status === 'rejected' ? `<span style="color:var(--danger)">${d.username || 'No Username'}</span>` : `Task ${total - i}`;
+                tasks.sort((a,b) => new Date(a.time) - new Date(b.time)); 
+                tasks.forEach((d, i) => { d.taskNum = i + 1; });
+                tasks.reverse(); 
+
+                let html = '';
+                tasks.forEach((d) => {
+                    let taskNameDisplay = d.status === 'rejected' ? `<span style="color:var(--danger)">${d.username || 'No Username'}</span>` : `Task ${d.taskNum}`;
                     let color = d.status === 'approved' ? 'var(--success)' : d.status === 'rejected' ? 'var(--danger)' : d.status === 'processing' ? 'var(--info)' : 'var(--warning)';
                     html += `<div class="section-box" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                         <div>
-                            <h4 style="color:var(--text); font-weight:800;">${taskNameDisplay}</h4>
+                            <h4 style="color:var(--text); font-weight:800; font-size:1.1rem;">${taskNameDisplay}</h4>
                             <p style="font-size:0.85rem; color:var(--muted); font-weight:600; margin-top:4px;">${new Date(d.time).toLocaleString()}</p>
                         </div>
                         <span style="background:${color}; color:white; padding:6px 12px; border-radius:12px; font-size:0.8rem; font-weight:800;">${d.status.toUpperCase()}</span>
                     </div>`;
                 });
                 container.innerHTML = html || '<p style="text-align:center; color:var(--muted); font-weight:600; margin-top:20px;">No tasks found.</p>';
-            } catch (err) {
-                container.innerHTML = '<p style="text-align:center; color:var(--danger); font-weight:600; margin-top:20px;">Error loading history. Try again later.</p>';
-                console.error("History Error: ", err);
-            }
-        };
+            }, (error) => {
+                let container = document.getElementById('task-history-list');
+                if(container) container.innerHTML = `<p style="text-align:center; color:var(--danger); font-weight:600; margin-top:20px;">Error loading history.</p>`;
+            });
+        }
 
-        window.selectWithdraw = (m, el) => { document.querySelectorAll('.pay-card').forEach(c => c.classList.remove('selected')); if(el) el.classList.add('selected'); window.wMethod = m; document.getElementById('usd-show').style.display = 'none'; document.getElementById('w-account').placeholder = m === 'binance' ? 'Binance ID দিন' : (m === 'rocket' ? 'রকেট নম্বর দিন' : 'বিকাশ নম্বর দিন'); calcUSD(); }; window.wMethod = 'bkash'; 
+        window.selectWithdraw = (m, el) => { 
+            document.querySelectorAll('.pay-card').forEach(c => c.classList.remove('selected')); 
+            if(el) el.classList.add('selected'); 
+            window.wMethod = m; 
+            document.getElementById('usd-show').style.display = 'none'; 
+            
+            let accInput = document.getElementById('w-account');
+            if(m === 'binance') accInput.placeholder = 'Binance ID দিন';
+            else if(m === 'rocket') accInput.placeholder = 'রকেট নম্বর দিন';
+            else accInput.placeholder = 'বিকাশ নম্বর দিন';
+            
+            calcUSD(); 
+        }; window.wMethod = 'bkash'; 
         
         window.calcUSD = () => { 
             let amt = parseFloat(document.getElementById('w-amount').value || 0);
@@ -709,7 +734,23 @@
             let net = amt - fee;
             let currAmt = window.wMethod === 'binance' ? net / (globalTaskConfig.dollarRate || 122) : net;
             
-            await withLoading(btn, async () => { await addDoc(collection(db, "withdrawals"), { uid: currentUser.uid, name: userDocData.name, method: window.wMethod, account: acc, amount: amt, netAmount: net, currencyAmount: currAmt, fee: fee, status: "pending", time: new Date().toISOString() }); await updateDoc(doc(db, "users", currentUser.uid), { earned: increment(-amt), withdrawStatus: "Pending" }); showToast("Withdraw Request Successful!", "success"); document.getElementById('w-amount').value=''; document.getElementById('w-account').value=''; document.getElementById('fee-show').style.display='none'; }); 
+            await withLoading(btn, async () => { 
+                await addDoc(collection(db, "withdrawals"), { uid: currentUser.uid, name: userDocData.name, method: window.wMethod, account: acc, amount: amt, netAmount: net, currencyAmount: currAmt, fee: fee, status: "pending", time: new Date().toISOString() }); 
+                await updateDoc(doc(db, "users", currentUser.uid), { earned: increment(-amt), withdrawStatus: "Pending" }); 
+                
+                // Bird Flying Animation Trigger
+                let bird = document.getElementById('withdraw-bird');
+                if(bird) {
+                    bird.classList.remove('bird-flying');
+                    void bird.offsetWidth; 
+                    bird.classList.add('bird-flying');
+                }
+                
+                showToast("Withdraw Request Successful!", "success"); 
+                document.getElementById('w-amount').value=''; 
+                document.getElementById('w-account').value=''; 
+                document.getElementById('fee-show').style.display='none'; 
+            }); 
         };
         
         function listenToWithdrawHistory(uid) { onSnapshot(query(collection(db, "withdrawals"), where("uid", "==", uid)), (snap) => { let docsArr = []; snap.forEach(d => { docsArr.push({id: d.id, ...d.data()}); }); docsArr.sort((a,b) => new Date(b.time) - new Date(a.time)); let html = ''; let latestHtml = ''; docsArr.forEach((data, index) => { let color = data.status==='approved'?'var(--success)':data.status==='rejected'?'var(--danger)':'var(--warning)'; let card = `<div class="section-box" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;"><div><h4 style="color:var(--primary); font-weight:800;">৳ ${data.amount}</h4><p style="font-size:0.85rem; color:var(--muted); font-weight:600; margin-top:4px;">${data.method.toUpperCase()} - <span style="color:var(--text);">${data.account}</span></p></div><span style="background:${color}; color:white; padding:6px 12px; border-radius:12px; font-size:0.8rem; font-weight:800;">${data.status.toUpperCase()}</span></div>`; html += card; if(index === 0) latestHtml = `<h4 style="margin-bottom:12px; font-size:1.1rem; font-weight:800;">Latest Withdraw Status</h4>` + card; }); document.getElementById('w-history-list').innerHTML = html || '<p style="text-align:center; color:var(--muted); font-weight:600; margin-top:20px;">No history found.</p>'; document.getElementById('wallet-recent-withdraw').innerHTML = latestHtml; }); }
