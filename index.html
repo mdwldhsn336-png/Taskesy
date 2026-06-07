@@ -166,6 +166,10 @@
         .profile-btn:hover { background: rgba(79, 70, 229, 0.05); }
         .profile-btn:last-child { border-bottom: none; }
         
+        /* Pulse Animation for Wallet Circle */
+        @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(79, 70, 229, 0); } 100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); } }
+        .wallet-circle { width: 170px; height: 170px; border: 8px solid var(--primary); border-radius: 50%; margin: 10px auto 25px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: var(--bg); animation: pulseGlow 2s infinite; }
+        
         /* Withdraw Bird Animation */
         @keyframes flyWithdrawBird {
             0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
@@ -273,7 +277,7 @@
 
         <div id="wallet-page" class="page">
             <div class="container">
-                <div style="width: 170px; height: 170px; border: 8px solid var(--primary); border-radius: 50%; margin: 10px auto 25px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.15); background: var(--bg);">
+                <div class="wallet-circle">
                     <span style="color:var(--muted); font-size:0.9rem; font-weight:600;">Current Balance</span>
                     <h2 id="wallet-bal" style="font-size: 2.2rem; color:var(--primary); margin-top:5px; font-weight:800;">৳ 0.00</h2>
                 </div>
@@ -346,7 +350,7 @@
     <div id="task-history-page" class="custom-modal">
         <header class="header"><h2 onclick="closeSubPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Task History</h2></header>
         <div class="container" id="task-history-list">
-            <div style="text-align:center; padding:20px; color:var(--muted);"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+            <div style="text-align:center; padding:20px; color:var(--muted);"><i class="fas fa-spinner fa-spin"></i> Loading Data...</div>
         </div>
     </div>
 
@@ -617,16 +621,21 @@
             
             let fallbackFnames = ["Aarav", "John", "Liam", "Hasan", "Sumon", "Emma", "Olivia", "Rahul", "Malek", "Fatema", "Kongsho"];
             let fallbackLnames = ["Roy", "Smith", "Islam", "Khan", "Ahmed", "Wilson", "Davis", "Sikdar", "Gazi", "Bani"];
-            let fname = typeof faker !== 'undefined' ? faker.name.firstName().replace(/[^a-zA-Z]/g, '') : fallbackFnames[Math.floor(Math.random() * fallbackFnames.length)];
-            let lname = typeof faker !== 'undefined' ? faker.name.lastName().replace(/[^a-zA-Z]/g, '') : fallbackLnames[Math.floor(Math.random() * fallbackLnames.length)];
+            let fnameRaw = typeof faker !== 'undefined' ? faker.name.firstName() : fallbackFnames[Math.floor(Math.random() * fallbackFnames.length)];
+            let lnameRaw = typeof faker !== 'undefined' ? faker.name.lastName() : fallbackLnames[Math.floor(Math.random() * fallbackLnames.length)];
+            
+            let fname = fnameRaw.replace(/[^a-zA-Z]/g, '').toLowerCase();
+            let lname = lnameRaw.replace(/[^a-zA-Z]/g, '').toLowerCase();
             
             let separators = ['.', '_', ''];
             let sep = separators[Math.floor(Math.random() * separators.length)];
             let randomNum = Math.floor(10 + Math.random() * 9999);
-            let rawUname = fname.toLowerCase() + sep + lname.toLowerCase() + randomNum;
-            let uname = rawUname.substring(0, 30); 
             
-            let genGmail = (fname.toLowerCase() + lname.toLowerCase() + Math.floor(100+Math.random()*900) + "@gmail.com").substring(0, 40);
+            let rawUname = fname + sep + lname + randomNum;
+            // Max 30 chars limit
+            let uname = rawUname.length > 30 ? rawUname.substring(0, 30) : rawUname;
+            
+            let genGmail = (fname + lname + Math.floor(100+Math.random()*900) + "@gmail.com").substring(0, 40);
             generatedTaskId = "WP-" + Math.floor(10000 + Math.random() * 90000);
             
             document.getElementById('current-task-id').innerText = "Task ID: " + generatedTaskId; document.getElementById('task-firstname').innerText = fname; document.getElementById('task-lastname').innerText = lname; document.getElementById('task-fullname').innerText = fname + " " + lname; document.getElementById('task-username').innerText = uname; document.getElementById('task-gengmail').innerText = genGmail; document.getElementById('task-password').innerText = activeTaskObj.password || 'N/A'; document.getElementById('modal-task-name').innerHTML = `<i class="fas fa-tasks"></i> ${activeTaskObj.name}`;
@@ -699,7 +708,8 @@
             document.querySelectorAll('.pay-card').forEach(c => c.classList.remove('selected')); 
             if(el) el.classList.add('selected'); 
             window.wMethod = m; 
-            document.getElementById('usd-show').style.display = 'none'; 
+            document.getElementById('fee-show').style.display = 'none'; 
+            document.getElementById('w-amount').value = '';
             
             let accInput = document.getElementById('w-account');
             if(m === 'binance') accInput.placeholder = 'Binance ID দিন';
