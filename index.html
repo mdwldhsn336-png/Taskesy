@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/otpauth/dist/otpauth.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.min.js"></script>
     <style>
         :root { --primary: #4f46e5; --primary-gradient: linear-gradient(135deg, #4f46e5, #9333ea); --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --muted: #94a3b8; --border: #334155; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --blue: #3b82f6; --info: #0ea5e9; }
         .light-mode { --bg: #f8fafc; --card: #ffffff; --text: #0f172a; --muted: #64748b; --border: #e2e8f0; }
@@ -470,28 +471,6 @@
 
         const adminEmails = ["mdwld2005@gmail.com", "newadmin@gmail.com"]; const defaultRefUid = "kIxdKf65uhcJhE7IJ1YGD0CDcjt1";
         
-        // ---- External GitHub Names Fetcher ----
-        let fnameDB = ["Aarav", "Vihaan", "Aditya", "Sai", "Arjun", "Rahul", "Amit", "Mohammad", "Abdullah", "John", "David", "Rahim", "Karim", "Tariqul", "Liam", "Hasan", "Imran", "Ahsanullah", "Zahid", "Kazi", "Sumon", "Jubayer", "Rubel", "Mahbub", "James", "Tanvir", "Ratul", "Rafiqul", "Ashikur", "Mehedi", "Nazmul", "Fatima", "Ayesha", "Nusrat", "Marium", "Emma", "Sophia", "Olivia", "Farzana", "Sonia", "Isabella", "Samiha"];
-        let lnameDB = ["Roy", "Das", "Sen", "Kumar", "Patel", "Bose", "Hasan", "Ali", "Noman", "Tuz", "Siddiqa", "Smith", "Miller", "Uddin", "Bakhsh", "Jahan", "Begum", "Islam", "Johnson", "Williams", "Khan", "Brown", "Davis", "Mia", "Khatun", "Alam", "Wilson", "Martinez", "Ahmed", "Sikder", "Rahman", "Huda"];
-        
-        // 🚀 আপনার GitHub Raw JSON ফাইলের লিংকটি এখানে দিন।
-        // JSON Format Example: { "firstNames": ["Name1", "Name2"], "lastNames": ["Lname1", "Lname2"] }
-        const namesApiUrl = "https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME/main/names.json"; 
-        
-        async function fetchExternalNames() {
-            try {
-                let res = await fetch(namesApiUrl);
-                let data = await res.json();
-                if(data.firstNames && data.firstNames.length > 0) fnameDB = data.firstNames;
-                if(data.lastNames && data.lastNames.length > 0) lnameDB = data.lastNames;
-                console.log("External Names Loaded Successfully!");
-            } catch(e) {
-                console.log("Using fallback database names.");
-            }
-        }
-        window.addEventListener('load', () => { fetchExternalNames(); });
-        // ----------------------------------------
-        
         const colOptions = ["Username", "Password", "2FA Code", "Cookies", "UID", "First Name", "Last Name", "Full Name", "Generated Email", "Recovery Email", "Task ID", "Username|Password|Cookies"];
 
         window.getUserAvatar = (approvedCount, fallbackPhoto, name) => {
@@ -624,10 +603,13 @@
         window.openTaskModal = (taskId) => {
             activeTaskObj = currentActiveTasks.find(t => t.id === taskId); if(!activeTaskObj) return showToast("Task not found!", "error");
             
-            let fname = fnameDB[Math.floor(Math.random() * fnameDB.length)]; 
-            let lname = lnameDB[Math.floor(Math.random() * lnameDB.length)];
+            // Using Faker.js for names (with a very simple fallback array just in case)
+            let fallbackFnames = ["Aarav", "John", "Liam", "Hasan", "Sumon", "Emma", "Olivia", "Rahul"];
+            let fallbackLnames = ["Roy", "Smith", "Islam", "Khan", "Ahmed", "Wilson", "Davis"];
+            let fname = typeof faker !== 'undefined' ? faker.name.firstName().replace(/[^a-zA-Z]/g, '') : fallbackFnames[Math.floor(Math.random() * fallbackFnames.length)];
+            let lname = typeof faker !== 'undefined' ? faker.name.lastName().replace(/[^a-zA-Z]/g, '') : fallbackLnames[Math.floor(Math.random() * fallbackLnames.length)];
             
-            // Generate 100% Unique Username for Instagram
+            // Generate 100% Unique Username
             let randomNum = Math.floor(10000 + Math.random() * 90000);
             let timeHash = Date.now().toString(36).slice(-4);
             let uname = fname.toLowerCase() + "_" + lname.toLowerCase() + randomNum + "_" + timeHash;
