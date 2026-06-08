@@ -67,24 +67,24 @@
         .welcome-card { background: var(--primary-gradient); padding: 22px; border-radius: 18px; color: white; margin-bottom: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transition: background 0.4s; }
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
         
-        /* 🔥 Smart Premium Stat Cards */
+        /* 🔥 Smart Premium Stat Cards (UPDATED with Animation) */
+        @keyframes borderPulse { 0% { border-color: rgba(255,255,255,0.05); } 50% { border-color: rgba(79, 70, 229, 0.4); box-shadow: 0 10px 25px rgba(79, 70, 229, 0.15); } 100% { border-color: rgba(255,255,255,0.05); } }
+        @keyframes floatIcon { 0% { transform: translateY(0px); filter: drop-shadow(0 0px 0px rgba(0,0,0,0)); } 50% { transform: translateY(-4px) scale(1.1); filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2)); } 100% { transform: translateY(0px); filter: drop-shadow(0 0px 0px rgba(0,0,0,0)); } }
+        
         .stat-card { 
             background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(0,0,0,0.1)); 
             padding: 16px; border-radius: 16px; text-align: center; 
             border: 1px solid rgba(255,255,255,0.05); 
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15); 
             backdrop-filter: blur(10px);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: borderPulse 4s infinite alternate; 
         }
-        .stat-card:hover { 
-            transform: translateY(-5px) scale(1.03); 
-            box-shadow: 0 15px 35px rgba(79, 70, 229, 0.2); 
-            border-color: var(--primary); 
-        }
-        .stat-card i { display: inline-block; transition: transform 0.4s ease; font-size: 1.8rem; }
-        .stat-card:hover i { transform: scale(1.2) translateY(-3px); filter: drop-shadow(0 0 8px currentColor); }
+        .stat-card:hover { transform: translateY(-5px) scale(1.03); box-shadow: 0 15px 35px rgba(79, 70, 229, 0.2); border-color: var(--primary); }
+        .stat-card i { display: inline-block; font-size: 1.8rem; animation: floatIcon 3s ease-in-out infinite; }
         .stat-card h4 { font-size: 1.5rem; margin-top: 5px; color: var(--text); font-weight: 800; }
-        .light-mode .stat-card { background: rgba(255,255,255,0.9); box-shadow: 0 8px 20px rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.1); }
+        .light-mode .stat-card { background: rgba(255,255,255,0.9); box-shadow: 0 8px 20px rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.1); animation: none; }
+        .light-mode .stat-card i { filter: drop-shadow(0 3px 3px rgba(0,0,0,0.1)); }
         
         .section-box { background: var(--card); border-radius: 16px; padding: 16px; border: 1px solid var(--border); margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); backdrop-filter: blur(10px); }
         
@@ -184,7 +184,7 @@
         
         /* Pulse Animation for Wallet Circle */
         @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(79, 70, 229, 0); } 100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); } }
-        .wallet-circle { width: 170px; height: 170px; border: 8px solid var(--primary); border-radius: 50%; margin: 10px auto 25px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: var(--bg); animation: pulseGlow 2s infinite; }
+        .wallet-circle { width: 170px; height: 170px; border: 8px solid var(--primary); border-radius: 50%; margin: 10px auto 25px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: var(--bg); animation: pulseGlow 2s infinite; position: relative; }
         
         /* Withdraw Bird Animation */
         @keyframes flyWithdrawBird {
@@ -292,7 +292,9 @@
                 <div class="section-box" style="text-align:center;">
                     <i class="fas fa-gift" style="font-size:2.5rem; color:var(--primary); margin-bottom:15px;"></i>
                     <p style="font-size:0.95rem; font-weight:600; margin-bottom:10px;">Share your link or code to start earning.</p>
-                    <div style="background:var(--primary-gradient); color:white; padding:10px; border-radius:12px; margin-bottom:15px; font-weight:800; font-size:1.2rem; letter-spacing:2px;">CODE: <span id="my-ref-code">Loading...</span></div>
+                    <div onclick="navigator.clipboard.writeText(document.getElementById('my-ref-code').innerText); showToast('Refer ID Copied!', 'success');" style="background:var(--primary-gradient); color:white; padding:12px; border-radius:12px; margin-bottom:15px; display:flex; justify-content:center; align-items:center; font-weight:800; font-size:1.2rem; letter-spacing:1px; cursor:pointer; box-shadow:0 5px 15px rgba(79,70,229,0.3);">
+                        Refer ID: <span id="my-ref-code" style="margin-left:8px;">Loading...</span> <i class="fas fa-copy" style="margin-left:10px; font-size:1.1rem; color:white;"></i>
+                    </div>
                     <div class="data-box" onclick="copyData(this, 'ref-link-text')" style="background:var(--bg); border:2px dashed var(--primary); padding:15px;">
                         <div id="ref-link-text" style="font-size:0.85rem; word-break:break-all; font-weight:600; text-align:left; color:var(--text);">Loading link...</div>
                         <i class="fas fa-copy" style="color:var(--primary); font-size:1.2rem;"></i>
@@ -681,13 +683,8 @@
             }
         }
         
-        function listenToUserStats(uid) { onSnapshot(doc(db, "users", uid), (docSnap) => { if(docSnap.exists()){ let d = docSnap.data(); userDocData = d; if(d.banned) { logoutUser(); alert("You are banned!"); return; } document.getElementById('stat-app').innerText = Math.max(0, d.approved || 0); document.getElementById('stat-earn').innerText = "৳ " + parseFloat(d.earned||0).toFixed(2); document.getElementById('wallet-bal').innerText = "৳ " + parseFloat(d.earned||0).toFixed(2); document.getElementById('stat-pend').innerText = Math.max(0, d.pending || 0); document.getElementById('stat-proc').innerText = Math.max(0, d.processing || 0); document.getElementById('stat-with').innerText = d.withdrawStatus || "None"; document.getElementById('ref-total-earn').innerText = "৳ " + (d.refEarn||0).toFixed(2); document.getElementById('ref-today-earn').innerText = "৳ " + (d.refToday||0).toFixed(2); document.getElementById('ref-user-count').innerText = d.refCount||0; 
+        function listenToUserStats(uid) { onSnapshot(doc(db, "users", uid), (docSnap) => { if(docSnap.exists()){ let d = docSnap.data(); userDocData = d; if(d.banned) { logoutUser(); alert("You are banned!"); return; } document.getElementById('stat-app').innerText = Math.max(0, d.approved || 0); document.getElementById('stat-earn').innerText = "৳ " + parseFloat(d.earned||0).toFixed(2); document.getElementById('wallet-bal').innerText = "৳ " + parseFloat(d.earned||0).toFixed(2); document.getElementById('stat-pend').innerText = Math.max(0, d.pending || 0); document.getElementById('stat-proc').innerText = Math.max(0, d.processing || 0); document.getElementById('stat-with').innerText = d.withdrawStatus || "None"; document.getElementById('ref-total-earn').innerText = "৳ " + (d.refEarn||0).toFixed(2); document.getElementById('ref-today-earn').innerText = "৳ " + (d.refToday||0).toFixed(2); 
         
-        document.getElementById('th-app').innerText = Math.max(0, d.approved || 0);
-        document.getElementById('th-rej').innerText = Math.max(0, d.rejected || 0);
-        document.getElementById('th-pend').innerText = Math.max(0, d.pending || 0);
-        document.getElementById('th-proc').innerText = Math.max(0, d.processing || 0);
-
         let avatarUrl = window.getUserAvatar(d.approved, currentUser.photoURL, currentUser.displayName);
         let imgDiv = document.getElementById('u-avatar-img'); let initialDiv = document.getElementById('u-initial');
         if (d.approved > 0) { initialDiv.style.display = 'none'; imgDiv.style.display = 'block'; imgDiv.src = avatarUrl; document.getElementById('u-rank-badge').innerHTML = window.getUserRankName(d.approved); document.getElementById('u-rank-badge').style.display = 'block'; } else { initialDiv.style.display = 'flex'; imgDiv.style.display = 'none'; document.getElementById('u-rank-badge').style.display = 'none'; }
@@ -698,10 +695,10 @@
             document.getElementById('ref-link-text').innerText = window.location.origin + window.location.pathname + "?ref=" + refCode; 
             document.getElementById('my-ref-code').innerText = refCode;
             
-            // Get referred users
             const q = query(collection(db, "users"), where("referrerId", "==", uid), limit(50));
             onSnapshot(q, (snap) => {
                 let html = '';
+                document.getElementById('ref-user-count').innerText = snap.size; 
                 snap.forEach(d => {
                     let u = d.data();
                     html += `<div class="user-card" style="margin-bottom:8px; padding:10px;">
@@ -782,6 +779,7 @@
             let randomNum = Math.floor(10 + Math.random() * 9999);
             
             let rawUname = fname + sep + lname + randomNum;
+            // Limit username to 30 chars
             let uname = rawUname.length > 30 ? rawUname.substring(0, 30) : rawUname;
             
             let genGmail = (fname + lname + Math.floor(100+Math.random()*900) + "@gmail.com").substring(0, 40);
@@ -828,13 +826,29 @@
             onSnapshot(query(collection(db, "submissions"), where("uid", "==", uid)), (snap) => {
                 let container = document.getElementById('task-history-items');
                 if(!container) return;
+                
                 let tasks = [];
-                snap.forEach(d => tasks.push(d.data()));
+                let cApp = 0, cRej = 0, cPend = 0, cProc = 0;
+                
+                snap.forEach(d => { 
+                    let td = d.data();
+                    tasks.push(td); 
+                    
+                    if(td.status === 'approved') cApp++;
+                    if(td.status === 'rejected') cRej++;
+                    if(td.status === 'pending') cPend++;
+                    if(td.status === 'processing') cProc++;
+                });
+                
+                document.getElementById('th-app').innerText = cApp;
+                document.getElementById('th-rej').innerText = cRej;
+                document.getElementById('th-pend').innerText = cPend;
+                document.getElementById('th-proc').innerText = cProc;
+
                 tasks.sort((a,b) => new Date(a.time) - new Date(b.time)); 
                 tasks.forEach((d, i) => { d.taskNum = i + 1; });
                 tasks.reverse(); 
                 
-                // Limit to 100
                 tasks = tasks.slice(0, 100);
 
                 let html = '';
