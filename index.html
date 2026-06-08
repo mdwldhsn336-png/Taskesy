@@ -292,10 +292,10 @@
                 <div class="section-box" style="text-align:center;">
                     <i class="fas fa-gift" style="font-size:2.5rem; color:var(--primary); margin-bottom:15px;"></i>
                     <p style="font-size:0.95rem; font-weight:600; margin-bottom:10px;">Share your link or code to start earning.</p>
-                    <div onclick="navigator.clipboard.writeText(document.getElementById('my-ref-code').innerText); showToast('Refer ID Copied!', 'success');" style="background:var(--primary-gradient); color:white; padding:12px; border-radius:12px; margin-bottom:15px; display:flex; justify-content:center; align-items:center; font-weight:800; font-size:1.2rem; letter-spacing:1px; cursor:pointer; box-shadow:0 5px 15px rgba(79,70,229,0.3);">
+                    <div onclick="window.copyDataText(document.getElementById('my-ref-code').innerText); showToast('Refer ID Copied!', 'success');" style="background:var(--primary-gradient); color:white; padding:12px; border-radius:12px; margin-bottom:15px; display:flex; justify-content:center; align-items:center; font-weight:800; font-size:1.2rem; letter-spacing:1px; cursor:pointer; box-shadow:0 5px 15px rgba(79,70,229,0.3);">
                         Refer ID: <span id="my-ref-code" style="margin-left:8px;">Loading...</span> <i class="fas fa-copy" style="margin-left:10px; font-size:1.1rem; color:white;"></i>
                     </div>
-                    <div class="data-box" onclick="copyData(this, 'ref-link-text')" style="background:var(--bg); border:2px dashed var(--primary); padding:15px;">
+                    <div class="data-box" onclick="window.copyDataText(document.getElementById('ref-link-text').innerText); showToast('Link Copied!', 'success');" style="background:var(--bg); border:2px dashed var(--primary); padding:15px;">
                         <div id="ref-link-text" style="font-size:0.85rem; word-break:break-all; font-weight:600; text-align:left; color:var(--text);">Loading link...</div>
                         <i class="fas fa-copy" style="color:var(--primary); font-size:1.2rem;"></i>
                     </div>
@@ -414,9 +414,16 @@
                 <div class="stat-card" style="padding:10px; flex:1;"> <span style="font-size:1.3rem;color:var(--warning);font-weight:800;" id="th-pend">0</span><br><span style="font-size:0.75rem; color:var(--muted);">Pending</span> </div>
                 <div class="stat-card" style="padding:10px; flex:1;"> <span style="font-size:1.3rem;color:var(--info);font-weight:800;" id="th-proc">0</span><br><span style="font-size:0.75rem; color:var(--muted);">Processing</span> </div>
             </div>
-            <div id="task-history-items">
+            
+            <div style="display:flex; gap:10px; margin-bottom:20px;">
+                <button id="tab-btn-today" class="btn-main" style="padding:12px; border-radius:12px; font-size:1rem;" onclick="switchHistoryTab('today')">Today Task</button>
+                <button id="tab-btn-yest" class="btn-main" style="padding:12px; border-radius:12px; font-size:1rem; background:var(--card); color:var(--text); box-shadow:none; border:1px solid var(--border);" onclick="switchHistoryTab('yesterday')">Yesterday Task</button>
+            </div>
+            
+            <div id="th-today-items">
                 <div style="text-align:center; padding:20px; color:var(--muted);"><i class="fas fa-spinner fa-spin"></i> Loading Data...</div>
             </div>
+            <div id="th-yesterday-items" style="display:none;"></div>
         </div>
     </div>
 
@@ -461,6 +468,11 @@
         </div>
     </div>
 
+    <div id="admin-user-history-modal" class="custom-modal" style="z-index: 1001;">
+        <header class="header"><h2 onclick="closeSubPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> <span id="auh-name">User</span>'s History</h2></header>
+        <div class="container" id="auh-list">Loading...</div>
+    </div>
+
     <div id="admin-app" style="display: none;">
         <header class="header"><h2 style="color:var(--warning);">Admin Pro</h2><button onclick="logoutUser()" style="background:none; border:none; color:var(--text); font-size:1.1rem; font-weight:700;"><i class="fas fa-sign-out-alt"></i> Exit</button></header>
         <div id="admin-home" class="page active"><div class="container"><div class="admin-grid"><div class="admin-card" onclick="openAdminPage('admin-statistics')"><i class="fas fa-chart-pie" style="font-size:2.2rem; color:#8b5cf6;"></i><h4 style="font-size:1.1rem;">Statistics</h4></div><div class="admin-card" onclick="openAdminPage('admin-user-manage')"><i class="fas fa-users" style="font-size:2.2rem; color:#f43f5e;"></i><h4 style="font-size:1.1rem;">User Manage</h4></div><div class="admin-card" onclick="openAdminPage('admin-reward')"><i class="fas fa-gift" style="font-size:2.2rem; color:var(--success);"></i><h4 style="font-size:1.1rem;">Process Report</h4></div><div class="admin-card" onclick="openAdminPage('admin-task-manage')"><i class="fas fa-list-check" style="font-size:2.2rem; color:var(--primary);"></i><h4 style="font-size:1.1rem;">Task Manage</h4></div><div class="admin-card" onclick="openAdminPage('admin-withdraw-manage')"><span id="admin-w-badge" class="admin-badge">0</span><i class="fas fa-wallet" style="font-size:2.2rem; color:#f59e0b;"></i><h4 style="font-size:1.1rem;">Withdraw</h4></div><div class="admin-card" onclick="openAdminPage('admin-support-config')"><i class="fas fa-headset" style="font-size:2.2rem; color:#06b6d4;"></i><h4 style="font-size:1.1rem;">Support & Rules</h4></div><div class="admin-card" onclick="openAdminPage('admin-notice')"><i class="fas fa-bullhorn" style="font-size:2.2rem; color:var(--warning);"></i><h4 style="font-size:1.1rem;">Notice</h4></div><div class="admin-card" onclick="openAdminPage('admin-report-history')"><i class="fas fa-history" style="font-size:2.2rem; color:var(--success);"></i><h4 style="font-size:1.1rem;">History & Reset</h4></div><div class="admin-card" onclick="openAdminPage('admin-live-sheets')" style="background:rgba(14, 165, 233, 0.1); border-color:var(--info); flex-direction:row;"><i class="fas fa-file-excel" style="font-size:2rem; color:var(--info);"></i><div style="text-align:left;"><h4 style="font-size:1.1rem; color:var(--info);">Live Files</h4></div></div><div class="admin-card" onclick="openAdminPage('admin-theme')" style="background:rgba(236, 72, 153, 0.1); border-color:#ec4899; flex-direction:row;"><i class="fas fa-palette" style="font-size:2rem; color:#ec4899;"></i><div style="text-align:left;"><h4 style="font-size:1.1rem; color:#ec4899;">Theme & UI</h4></div></div></div></div></div>
@@ -488,6 +500,15 @@
         <div id="admin-task-manage" class="page" style="background:var(--bg); z-index:200;">
             <header class="header"><h2 onclick="closeAdminPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Task Manage</h2></header>
             <div class="container">
+                <div class="section-box" style="border-color:var(--info); background:rgba(14,165,233,0.05);">
+                    <h3 style="margin-bottom:10px; font-weight:800; color:var(--info);"><i class="fas fa-search"></i> Search Task by ID</h3>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="admin-search-tid" class="input-box" placeholder="e.g. WP-12345" style="margin:0;">
+                        <button class="btn-main" style="width:auto; padding:10px 20px; background:var(--info);" onclick="adminSearchTask()">Search</button>
+                    </div>
+                    <div id="admin-search-result" style="margin-top:15px;"></div>
+                </div>
+
                 <div class="section-box" style="border-color:var(--primary);"><h3 style="margin-bottom:15px; font-weight:800;"><i class="fas fa-plus-circle"></i> <span id="add-task-heading">Add Task</span></h3><select id="new-task-type" class="input-box" onchange="toggleTaskInputs()"><option value="ig">Instagram</option><option value="fb">Facebook</option><option value="twitter">Twitter</option><option value="gmail">Gmail</option><option value="tg">Telegram Join</option></select><input type="text" id="new-task-name" class="input-box" placeholder="Task Name (e.g., Create Inst)"><input type="number" id="new-task-price" class="input-box" step="0.01" placeholder="Task Price (৳)"><div id="standard-inputs"><input type="text" id="new-task-pass" class="input-box" placeholder="Global Password"></div><div id="gmail-inputs" style="display:none;"><input type="text" id="new-task-rec-mail" class="input-box" placeholder="Recovery Email"></div><div id="tg-inputs" style="display:none;"><input type="text" id="new-task-tg-link" class="input-box" placeholder="Telegram Channel Link"></div><div id="uid-toggle-box" style="margin-top:10px; background:var(--bg); padding:15px; border-radius:12px; border:1px solid var(--border); display:none;"><div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-weight:700;">Require Facebook UID?</span><label class="switch"><input type="checkbox" id="new-task-is-uid"><span class="slider"></span></label></div></div><div id="universal-2fa-box" style="margin-top:15px; background:var(--bg); padding:15px; border-radius:12px; border:1px solid var(--border);"><div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-weight:700;">Require 2FA for this task?</span><label class="switch"><input type="checkbox" id="new-task-2fa-req" onchange="document.getElementById('2fa-options-box').style.display=this.checked?'block':'none'"><span class="slider"></span></label></div><div id="2fa-options-box" style="display:none; margin-top:10px;"><select id="new-task-2fa-mode" class="input-box" style="margin:0;"><option value="one_time">Single (One-Time) 2FA</option><option value="multi">Multi (Refreshable) 2FA</option></select></div></div><div id="cookie-toggle-box" style="margin-top:10px; background:var(--bg); padding:15px; border-radius:12px; border:1px solid var(--border);"><div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-weight:700;">Is this a Cookie Task?</span><label class="switch"><input type="checkbox" id="new-task-is-cookie"><span class="slider"></span></label></div></div><button class="btn-main" id="add-task-btn-main" onclick="adminAddTask(this)" style="margin-top:15px;">Add Task to Database</button></div>
                 <h3 style="margin:20px 0 10px; font-weight:800;">Active Tasks</h3><div id="admin-active-tasks-list"></div>
                 <div class="section-box" style="margin-top:30px; border-color:var(--info);"><h3 style="margin-bottom:15px; font-weight:800; color:var(--info)"><i class="fas fa-file-excel"></i> Sheet Column Manager</h3><p style="font-size:0.85rem; color:var(--muted); margin-bottom:15px;">যে টাস্কগুলো চালু আছে শুধুমাত্র সেগুলোর জন্য কলাম সাজান।</p><select id="sheet-task-select" class="input-box" onchange="loadSheetConfigUI()"><option value="">-- Select Active Task --</option></select><div id="dynamic-cols-wrapper" style="display:none;"><div id="sheet-cols-container" style="display:flex; flex-direction:column; gap:8px; margin-bottom:15px;"></div><button class="btn-main" style="background:var(--bg); border:1px dashed var(--info); color:var(--text); box-shadow:none; margin-bottom:15px;" onclick="addSheetColSelect()">+ Add Select Box</button><button class="btn-main" style="background:var(--info); box-shadow:none;" onclick="saveSheetConfig(this)">Save Task Columns</button></div></div>
@@ -573,6 +594,9 @@
             if (count > 200) return '<i class="fas fa-crown"></i> রাজা';
             return 'Newbie';
         };
+
+        // --- Copy Globally ---
+        window.copyDataText = (text) => { navigator.clipboard.writeText(text); };
 
         // --- Read URL Param for Referral Auto-Fill ---
         window.addEventListener('DOMContentLoaded', () => {
@@ -821,52 +845,81 @@
         window.startTgTask = (link, btn) => { if(!link) return showToast("No link available", "error"); window.open(link, '_blank'); let tgBtn = btn.nextElementSibling; if(tgBtn && tgBtn.id.startsWith('tg-verify-btn')) tgBtn.style.display = 'flex'; };
         window.verifyTgTask = async (taskId, price, btn) => { await withLoading(btn, async () => { await new Promise(r => setTimeout(r, 2000)); await updateDoc(doc(db, "users", currentUser.uid), { tgJoined: true, earned: increment(price) }); showToast("Verification Success! Reward added.", "success"); btn.parentElement.style.display = 'none'; }); };
 
-        // User Real-time Task History Listener
+        // --- User Task History Logic (Today & Yesterday Tabs) ---
+        window.switchHistoryTab = (tab) => {
+            if(tab === 'today') {
+                document.getElementById('th-today-items').style.display = 'block';
+                document.getElementById('th-yesterday-items').style.display = 'none';
+                document.getElementById('tab-btn-today').style.background = 'var(--primary-gradient)';
+                document.getElementById('tab-btn-today').style.color = 'white';
+                document.getElementById('tab-btn-today').style.border = 'none';
+                document.getElementById('tab-btn-yest').style.background = 'var(--card)';
+                document.getElementById('tab-btn-yest').style.color = 'var(--text)';
+                document.getElementById('tab-btn-yest').style.border = '1px solid var(--border)';
+            } else {
+                document.getElementById('th-today-items').style.display = 'none';
+                document.getElementById('th-yesterday-items').style.display = 'block';
+                document.getElementById('tab-btn-yest').style.background = 'var(--primary-gradient)';
+                document.getElementById('tab-btn-yest').style.color = 'white';
+                document.getElementById('tab-btn-yest').style.border = 'none';
+                document.getElementById('tab-btn-today').style.background = 'var(--card)';
+                document.getElementById('tab-btn-today').style.color = 'var(--text)';
+                document.getElementById('tab-btn-today').style.border = '1px solid var(--border)';
+            }
+        };
+
         function listenToTaskHistory(uid) {
             onSnapshot(query(collection(db, "submissions"), where("uid", "==", uid)), (snap) => {
-                let container = document.getElementById('task-history-items');
-                if(!container) return;
+                let todayItems = document.getElementById('th-today-items');
+                let yestItems = document.getElementById('th-yesterday-items');
+                if(!todayItems || !yestItems) return;
                 
-                let tasks = [];
                 let cApp = 0, cRej = 0, cPend = 0, cProc = 0;
+                let todayHtml = ''; let yestHtml = '';
                 
-                snap.forEach(d => { 
-                    let td = d.data();
-                    tasks.push(td); 
+                let todayStr = new Date().toLocaleDateString('en-GB');
+                let yDate = new Date(); yDate.setDate(yDate.getDate() - 1);
+                let yesterdayStr = yDate.toLocaleDateString('en-GB');
+
+                let allTasks = [];
+                snap.forEach(d => allTasks.push({ id: d.id, ...d.data() }));
+                
+                allTasks.sort((a,b) => new Date(b.time) - new Date(a.time));
+
+                allTasks.forEach((d) => {
+                    if(d.status === 'approved') cApp++;
+                    if(d.status === 'rejected') cRej++;
+                    if(d.status === 'pending') cPend++;
+                    if(d.status === 'processing') cProc++;
+
+                    let tDateStr = new Date(d.time).toLocaleDateString('en-GB');
                     
-                    if(td.status === 'approved') cApp++;
-                    if(td.status === 'rejected') cRej++;
-                    if(td.status === 'pending') cPend++;
-                    if(td.status === 'processing') cProc++;
+                    let taskNameDisplay = `<div onclick="window.copyDataText('${d.taskId}'); showToast('Task ID Copied!', 'success')" style="cursor:pointer; display:flex; align-items:center; gap:8px;">${d.taskId} <i class="fas fa-copy" style="color:var(--primary); font-size:1rem;"></i></div>`;
+                    let subTitle = d.status === 'rejected' ? `<span style="color:var(--danger)">User: ${d.username || 'N/A'}</span>` : `${new Date(d.time).toLocaleTimeString()}`;
+                    let color = d.status === 'approved' ? 'var(--success)' : d.status === 'rejected' ? 'var(--danger)' : d.status === 'processing' ? 'var(--info)' : 'var(--warning)';
+                    
+                    let card = `<div class="section-box" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding:12px 16px;">
+                        <div>
+                            <h4 style="color:var(--text); font-weight:800; font-size:1.1rem;">${taskNameDisplay}</h4>
+                            <p style="font-size:0.8rem; color:var(--muted); font-weight:600; margin-top:4px;">${subTitle}</p>
+                        </div>
+                        <span style="background:${color}; color:white; padding:6px 12px; border-radius:12px; font-size:0.8rem; font-weight:800;">${d.status.toUpperCase()}</span>
+                    </div>`;
+
+                    if(tDateStr === todayStr) {
+                        todayHtml += card;
+                    } else {
+                        yestHtml += card; // Everything else (yesterday and older) goes here
+                    }
                 });
-                
+
                 document.getElementById('th-app').innerText = cApp;
                 document.getElementById('th-rej').innerText = cRej;
                 document.getElementById('th-pend').innerText = cPend;
                 document.getElementById('th-proc').innerText = cProc;
 
-                tasks.sort((a,b) => new Date(a.time) - new Date(b.time)); 
-                tasks.forEach((d, i) => { d.taskNum = i + 1; });
-                tasks.reverse(); 
-                
-                tasks = tasks.slice(0, 100);
-
-                let html = '';
-                tasks.forEach((d) => {
-                    let taskNameDisplay = d.status === 'rejected' ? `<span style="color:var(--danger)">${d.username || 'No Username'}</span>` : `Task ${d.taskNum}`;
-                    let color = d.status === 'approved' ? 'var(--success)' : d.status === 'rejected' ? 'var(--danger)' : d.status === 'processing' ? 'var(--info)' : 'var(--warning)';
-                    html += `<div class="section-box" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding:12px 16px;">
-                        <div>
-                            <h4 style="color:var(--text); font-weight:800; font-size:1.1rem;">${taskNameDisplay}</h4>
-                            <p style="font-size:0.8rem; color:var(--muted); font-weight:600; margin-top:4px;">${new Date(d.time).toLocaleString()}</p>
-                        </div>
-                        <span style="background:${color}; color:white; padding:6px 12px; border-radius:12px; font-size:0.8rem; font-weight:800;">${d.status.toUpperCase()}</span>
-                    </div>`;
-                });
-                container.innerHTML = html || '<p style="text-align:center; color:var(--muted); font-weight:600; margin-top:20px;">No tasks found.</p>';
-            }, (error) => {
-                let container = document.getElementById('task-history-items');
-                if(container) container.innerHTML = `<p style="text-align:center; color:var(--danger); font-weight:600; margin-top:20px;">Error loading history.</p>`;
+                todayItems.innerHTML = todayHtml || '<p style="text-align:center; color:var(--muted); font-weight:600; margin-top:20px;">No tasks for today.</p>';
+                yestItems.innerHTML = yestHtml || '<p style="text-align:center; color:var(--muted); font-weight:600; margin-top:20px;">No tasks available.</p>';
             });
         }
 
@@ -982,6 +1035,110 @@
             }); 
         };
         window.deleteAdminTask = async (id) => { if(confirm("Delete this task?")) { await deleteDoc(doc(db, "tasks", id)); showToast("Deleted", "success"); } };
+        
+        // --- NEW: Admin Search Task by ID ---
+        window.adminSearchTask = async () => {
+            let tid = document.getElementById('admin-search-tid').value.trim().toUpperCase();
+            if(!tid) return showToast("Enter Task ID!", "error");
+            
+            let resDiv = document.getElementById('admin-search-result');
+            resDiv.innerHTML = `<div style="text-align:center; padding:10px;"><i class="fas fa-spinner fa-spin"></i> Searching...</div>`;
+            
+            try {
+                const q = query(collection(db, "submissions"), where("taskId", "==", tid), limit(1));
+                const snap = await getDocs(q);
+                
+                if(snap.empty) {
+                    resDiv.innerHTML = `<p style="color:var(--danger); font-weight:700; text-align:center;">Task not found!</p>`;
+                    return;
+                }
+                
+                let d = snap.docs[0].data();
+                let docId = snap.docs[0].id;
+                
+                let color = d.status === 'approved' ? 'var(--success)' : d.status === 'rejected' ? 'var(--danger)' : d.status === 'processing' ? 'var(--info)' : 'var(--warning)';
+                
+                resDiv.innerHTML = `
+                    <div style="background:var(--bg); padding:15px; border-radius:12px; border:1px solid var(--border);">
+                        <p style="margin-bottom:5px;"><b>Task ID:</b> ${d.taskId}</p>
+                        <p style="margin-bottom:5px;"><b>User Email:</b> ${d.submittedBy}</p>
+                        <p style="margin-bottom:5px;"><b>Username/Link:</b> ${d.username || 'N/A'}</p>
+                        <p style="margin-bottom:5px;"><b>Status:</b> <span style="color:${color}; font-weight:700;">${d.status.toUpperCase()}</span></p>
+                        
+                        <div style="display:flex; gap:10px; margin-top:15px;">
+                            <button class="btn-main" style="background:var(--success); padding:10px; flex:1;" onclick="adminDirectAction(this, '${docId}', 'approve', '${d.uid}', ${d.price})"><i class="fas fa-check"></i> Approve</button>
+                            <button class="btn-main" style="background:var(--danger); padding:10px; flex:1;" onclick="adminDirectAction(this, '${docId}', 'reject', '${d.uid}', ${d.price})"><i class="fas fa-times"></i> Reject</button>
+                        </div>
+                    </div>
+                `;
+            } catch(e) {
+                resDiv.innerHTML = `<p style="color:var(--danger); text-align:center;">Error searching task.</p>`;
+            }
+        };
+
+        window.adminDirectAction = async (btn, docId, action, uid, price) => {
+            await withLoading(btn, async () => {
+                let taskDataSnap = await getDoc(doc(db, "submissions", docId));
+                if(!taskDataSnap.exists()) return showToast("Error finding task", "error");
+                let taskData = taskDataSnap.data();
+
+                if(action === 'approve') {
+                    await updateDoc(doc(db, "submissions", docId), { status: "approved" });
+                    let upds = { approved: increment(1), earned: increment(price) };
+                    if(taskData.status === 'pending') upds.pending = increment(-1);
+                    if(taskData.status === 'processing') upds.processing = increment(-1);
+                    await updateDoc(doc(db, "users", uid), upds);
+                    
+                    let uSnap = await getDoc(doc(db, "users", uid));
+                    if(uSnap.exists() && uSnap.data().referrerId) {
+                        let refId = uSnap.data().referrerId;
+                        let commission = price * ((globalTaskConfig.refPercent || 10) / 100);
+                        await updateDoc(doc(db, "users", refId), { earned: increment(commission), refEarn: increment(commission), refToday: increment(commission) }).catch(e=>console.log(e));
+                    }
+                    showToast("Task Approved!", "success");
+                } else if (action === 'reject') {
+                    await updateDoc(doc(db, "submissions", docId), { status: "rejected" });
+                    let upds = { rejected: increment(1) };
+                    if(taskData.status === 'pending') upds.pending = increment(-1);
+                    if(taskData.status === 'processing') upds.processing = increment(-1);
+                    await updateDoc(doc(db, "users", uid), upds);
+                    showToast("Task Rejected!", "success");
+                }
+                window.adminSearchTask(); // Re-trigger search to update UI
+            });
+        };
+
+        // --- NEW: Admin view user task history ---
+        window.adminViewUserHistory = async (uid, name) => {
+            document.getElementById('auh-name').innerText = name;
+            openSubPage('admin-user-history-modal');
+            let list = document.getElementById('auh-list');
+            list.innerHTML = `<div style="text-align:center; padding:20px; color:var(--muted);"><i class="fas fa-spinner fa-spin"></i> Loading Tasks...</div>`;
+            
+            try {
+                const q = query(collection(db, "submissions"), where("uid", "==", uid));
+                const snap = await getDocs(q);
+                let tasks = [];
+                snap.forEach(d => tasks.push(d.data()));
+                tasks.sort((a,b) => new Date(b.time) - new Date(a.time));
+                
+                let html = '';
+                tasks.forEach(d => {
+                    let color = d.status === 'approved' ? 'var(--success)' : d.status === 'rejected' ? 'var(--danger)' : d.status === 'processing' ? 'var(--info)' : 'var(--warning)';
+                    html += `<div class="section-box" style="margin-bottom:10px; padding:15px; border-left:4px solid ${color};">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <b>${d.taskId}</b>
+                            <span style="color:white; background:${color}; padding:4px 8px; border-radius:8px; font-size:0.75rem; font-weight:800;">${d.status.toUpperCase()}</span>
+                        </div>
+                        <p style="font-size:0.85rem; color:var(--muted); margin-top:5px;">${new Date(d.time).toLocaleString()}</p>
+                    </div>`;
+                });
+                list.innerHTML = html || `<p style="text-align:center; color:var(--muted);">No tasks found for this user.</p>`;
+            } catch(e) {
+                list.innerHTML = `<p style="text-align:center; color:var(--danger);">Error loading tasks.</p>`;
+            }
+        };
+
         window.loadSheetConfigUI = () => { let tId = document.getElementById('sheet-task-select').value; let wrapper = document.getElementById('dynamic-cols-wrapper'); let container = document.getElementById('sheet-cols-container'); if(!tId) { wrapper.style.display = 'none'; return; } wrapper.style.display = 'block'; container.innerHTML = ''; let savedCols = sheetConfigs[tId]?.cols || ["Username", "Password", "Task ID"]; savedCols.forEach(col => addSheetColSelect(col)); };
         window.addSheetColSelect = (val = "") => { let container = document.getElementById('sheet-cols-container'); let sel = document.createElement('select'); sel.className = 'input-box sheet-col-sel'; sel.style.margin = '0'; colOptions.forEach(opt => { let option = document.createElement('option'); option.value = opt; option.text = opt; if(opt === val) option.selected = true; sel.appendChild(option); }); let div = document.createElement('div'); div.style.display = 'flex'; div.style.gap = '10px'; div.style.alignItems = 'center'; let delBtn = document.createElement('button'); delBtn.innerHTML = '<i class="fas fa-times"></i>'; delBtn.style.background = 'var(--danger)'; delBtn.style.color = 'white'; delBtn.style.border = 'none'; delBtn.style.padding = '10px 15px'; delBtn.style.borderRadius = '8px'; delBtn.onclick = () => div.remove(); div.appendChild(sel); div.appendChild(delBtn); container.appendChild(div); };
         window.saveSheetConfig = async (btn) => { let tId = document.getElementById('sheet-task-select').value; if(!tId) return; let activeTask = currentActiveTasks.find(t=>t.id === tId); let sels = document.querySelectorAll('.sheet-col-sel'); let cols = []; sels.forEach(s => cols.push(s.value)); sheetConfigs[tId] = { taskName: activeTask.name, cols: cols }; await withLoading(btn, async () => { await setDoc(doc(db, "settings", "sheetConfig"), sheetConfigs); showToast("Task Columns Saved!", "success"); renderSavedSheetsList(); }); };
@@ -994,7 +1151,29 @@
         html += `<div class="user-card" onclick="openUserModal('${docSnap.id}', '${d.name}', '${d.email}', ${d.earned||0}, ${d.approved||0}, ${d.banned}, '${d.joinDate||'N/A'}')"><div style="display:flex; align-items:center;"><img src="${avt}" style="background:var(--bg); object-fit:contain; padding:2px;"><div><b style="font-size:1.1rem;">${d.name}</b> <span style="font-size:0.7rem; background:var(--primary-gradient); color:white; padding:2px 6px; border-radius:10px; margin-left:5px; white-space:nowrap;">${window.getUserRankName(d.approved)}</span><br><span style="font-size:0.8rem; color:var(--muted);">${d.email}</span></div></div>${banBtn}</div>`; }); 
         document.getElementById('s-total-users').innerText = u; document.getElementById('s-total-bal').innerText = b.toFixed(2); document.getElementById('s-today-proc').innerText = totalProc; document.getElementById('s-today-pend').innerText = totalPend; document.getElementById('admin-user-list').innerHTML = html; }); onSnapshot(query(collection(db, "submissions"), where("archived", "==", false)), snap => { liveSubmissions = []; let todaySub=0; snap.forEach(docSnap => { let d = docSnap.data(); liveSubmissions.push({id: docSnap.id, ...d}); todaySub++; }); document.getElementById('s-today-sub').innerText = todaySub; renderLiveSheets(); }); onSnapshot(collection(db, "submissions"), snap => { let ts=0, ta=0, tr=0; snap.forEach(docSnap => { let d = docSnap.data(); ts++; if(d.status==='approved') ta++; if(d.status==='rejected') tr++; }); document.getElementById('s-total-task').innerText = ts; document.getElementById('s-tot-app').innerText = ta; document.getElementById('s-tot-rej').innerText = tr; document.getElementById('s-app-rate').innerText = ts>0 ? ((ta/ts)*100).toFixed(1) : 0; }); onSnapshot(collection(db, "withdrawals"), snap => { let wHtml = '', tWith = 0, pCount = 0; snap.forEach(docSnap => { let d = docSnap.data(); if(d.status === 'approved') tWith += d.amount; if(d.status === 'pending') { pCount++; wHtml += `<div class="section-box" style="cursor:pointer;" onclick="openWithdrawDetailsModal('${docSnap.id}', '${d.uid}', '${d.name}', '${d.method}', '${d.account}', ${d.amount}, ${d.netAmount||d.amount}, ${d.currencyAmount||d.amount}, ${d.fee||0})"><b style="font-size:1.1rem;">${d.name}</b> <span style="float:right; color:var(--primary); font-weight:800; font-size:1.2rem;">৳ ${d.amount}</span><p style="font-size:0.9rem; color:var(--muted); font-weight:600; margin-top:5px;">${d.method.toUpperCase()}</p></div>`; } }); document.getElementById('s-tot-with').innerText = tWith.toFixed(2); document.getElementById('admin-w-requests').innerHTML = wHtml || '<p style="text-align:center; color:var(--muted); font-weight:600;">No pending requests.</p>'; let badge = document.getElementById('admin-w-badge'); if(pCount > 0) { badge.style.display = 'flex'; badge.innerText = pCount; } else { badge.style.display = 'none'; } }); onSnapshot(query(collection(db, "reports"), orderBy("timestamp", "desc")), snap => { let hHtml = ''; snap.forEach(docSnap => { let d = docSnap.data(); let sheetsCount = Object.keys(d.data).length; hHtml += `<div class="section-box"><div><b style="font-size:1.1rem; color:var(--primary);">${d.date}</b><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">Total Saved Files: ${sheetsCount}</p></div><div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">`; for(let [sheetName, tasks] of Object.entries(d.data)) { hHtml += `<div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg); padding:10px; border-radius:8px; border:1px solid var(--border);"><span style="font-weight:600; font-size:0.9rem;"><i class="fas fa-file-excel" style="color:var(--success); margin-right:5px;"></i> ${sheetName} (${tasks.length})</span><button class="btn-main" style="width:auto; padding:6px 12px; font-size:0.8rem; box-shadow:none;" onclick="downloadArchivedSheet('${docSnap.id}', '${sheetName}')"><i class="fas fa-download"></i> DL</button></div>`; } hHtml += `</div></div>`; }); document.getElementById('admin-history-list').innerHTML = hHtml || '<p style="color:var(--muted); font-weight:600;">No history available.</p>'; }); }
 
-        window.searchUser = (val) => { let term = val.toLowerCase(); document.querySelectorAll('#admin-user-list .user-card').forEach(card => { if(card.innerText.toLowerCase().includes(term)) card.style.display = 'flex'; else card.style.display = 'none'; }); }; window.openUserModal = (id, name, email, earned, app, banned, joinDate) => { event.stopPropagation(); document.getElementById('admin-ud-content').innerHTML = `<div class="section-box" style="text-align:center;"><h2 style="font-weight:800; font-size:1.8rem;">${name}</h2><p style="color:var(--muted); font-weight:600;">${email}</p><h3 style="color:var(--primary); margin-top:15px; font-size:2rem;">৳ <span id="modal-u-bal">${parseFloat(earned).toFixed(2)}</span></h3><div style="margin-top:10px; display:flex; gap:10px; justify-content:center;"><input type="number" id="edit-u-bal" class="input-box" style="width:100px; margin:0;" value="${earned}"><button class="btn-main" style="width:auto; padding:10px;" onclick="updateUserBal('${id}', this)">Update</button></div><div style="background:var(--bg); border:1px solid var(--border); border-radius:12px; padding:15px; margin-top:20px; display:flex; justify-content:space-around;"><div><p style="font-size:0.8rem; color:var(--muted);">Total Approved</p><b style="font-size:1.2rem; color:var(--success);">${app}</b></div><div><p style="font-size:0.8rem; color:var(--muted);">Join Date</p><b style="font-size:1.1rem; color:var(--text);">${joinDate}</b></div></div><p style="color:${banned?'var(--danger)':'var(--success)'}; font-weight:800; font-size:1.2rem; margin-top:15px; padding:10px; background:var(--bg); border-radius:10px;">Status: ${banned?'BANNED':'ACTIVE'}</p></div>`; openSubPage('admin-user-details'); }; window.updateUserBal = async (uid, btn) => { let newBal = parseFloat(document.getElementById('edit-u-bal').value); await withLoading(btn, async () => { await updateDoc(doc(db, "users", uid), { earned: newBal }); document.getElementById('modal-u-bal').innerText = newBal.toFixed(2); showToast("Balance updated manually!", "success"); }); }; window.toggleBan = async (uid, banStatus) => { event.stopPropagation(); await updateDoc(doc(db, "users", uid), { banned: banStatus }); showToast("User status updated!", "success"); }; 
+        window.searchUser = (val) => { let term = val.toLowerCase(); document.querySelectorAll('#admin-user-list .user-card').forEach(card => { if(card.innerText.toLowerCase().includes(term)) card.style.display = 'flex'; else card.style.display = 'none'; }); }; 
+        window.openUserModal = (id, name, email, earned, app, banned, joinDate) => { 
+            event.stopPropagation(); 
+            document.getElementById('admin-ud-content').innerHTML = `
+            <div class="section-box" style="text-align:center;">
+                <h2 style="font-weight:800; font-size:1.8rem;">${name}</h2><p style="color:var(--muted); font-weight:600;">${email}</p>
+                <h3 style="color:var(--primary); margin-top:15px; font-size:2rem;">৳ <span id="modal-u-bal">${parseFloat(earned).toFixed(2)}</span></h3>
+                <div style="margin-top:10px; display:flex; gap:10px; justify-content:center;">
+                    <input type="number" id="edit-u-bal" class="input-box" style="width:100px; margin:0;" value="${earned}">
+                    <button class="btn-main" style="width:auto; padding:10px;" onclick="updateUserBal('${id}', this)">Update</button>
+                </div>
+                <div style="background:var(--bg); border:1px solid var(--border); border-radius:12px; padding:15px; margin-top:20px; display:flex; justify-content:space-around;">
+                    <div><p style="font-size:0.8rem; color:var(--muted);">Total Approved</p><b style="font-size:1.2rem; color:var(--success);">${app}</b></div>
+                    <div><p style="font-size:0.8rem; color:var(--muted);">Join Date</p><b style="font-size:1.1rem; color:var(--text);">${joinDate}</b></div>
+                </div>
+                
+                <button class="btn-main" style="background:var(--info); width:100%; margin-top:15px; box-shadow:none;" onclick="adminViewUserHistory('${id}', '${name}')"><i class="fas fa-history"></i> View Task History</button>
+                
+                <p style="color:${banned?'var(--danger)':'var(--success)'}; font-weight:800; font-size:1.2rem; margin-top:15px; padding:10px; background:var(--bg); border-radius:10px;">Status: ${banned?'BANNED':'ACTIVE'}</p>
+            </div>`; 
+            openSubPage('admin-user-details'); 
+        }; 
+        window.updateUserBal = async (uid, btn) => { let newBal = parseFloat(document.getElementById('edit-u-bal').value); await withLoading(btn, async () => { await updateDoc(doc(db, "users", uid), { earned: newBal }); document.getElementById('modal-u-bal').innerText = newBal.toFixed(2); showToast("Balance updated manually!", "success"); }); }; window.toggleBan = async (uid, banStatus) => { event.stopPropagation(); await updateDoc(doc(db, "users", uid), { banned: banStatus }); showToast("User status updated!", "success"); }; 
         
         window.openWithdrawDetailsModal = async (docId, uid, name, method, account, amount, netAmount, currencyAmount, fee) => { 
             let displayPay = method === 'binance' ? `$${parseFloat(currencyAmount).toFixed(2)}` : `৳${parseFloat(netAmount).toFixed(2)}`;
