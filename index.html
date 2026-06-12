@@ -375,9 +375,7 @@
                     <div class="pro-avatar" id="u-initial">U</div>
                     
                     <h2 id="u-fullname" style="font-size:1.8rem; font-weight:800; color:var(--text);">Name</h2>
-                    
                     <div id="u-rank-badge" style="display:none; background:var(--primary-gradient); color:white; padding:6px 16px; border-radius:20px; font-size:0.9rem; font-weight:800; margin:10px auto 0; width:fit-content; box-shadow:0 4px 10px rgba(0,0,0,0.2);"><i class="fas fa-medal"></i> Rank</div>
-                    
                     <p id="u-email" style="color:var(--muted); font-size:1rem; margin-top:8px; font-weight:500;">Email</p>
                 </div>
                 <div style="background:var(--card); border-radius:18px; border:1px solid var(--border); box-shadow:0 10px 25px rgba(0,0,0,0.1); overflow:hidden; margin-top:10px; display: flex; flex-direction: column;">
@@ -723,7 +721,10 @@
             }
         }
         
-        function listenToUserStats(uid) { onSnapshot(doc(db, "users", uid), (docSnap) => { if(docSnap.exists()){ let d = docSnap.data(); userDocData = d; if(d.banned) { logoutUser(); alert("You are banned!"); return; } document.getElementById('stat-app').innerText = Math.max(0, d.approved || 0); document.getElementById('stat-earn').innerText = "৳ " + parseFloat(d.earned||0).toFixed(2); document.getElementById('wallet-bal').innerText = "৳ " + parseFloat(d.earned||0).toFixed(2); document.getElementById('stat-pend').innerText = Math.max(0, d.pending || 0); document.getElementById('stat-proc').innerText = Math.max(0, d.processing || 0); document.getElementById('stat-with').innerText = d.withdrawStatus || "None"; document.getElementById('ref-total-earn').innerText = "৳ " + (d.refEarn||0).toFixed(2); document.getElementById('ref-today-earn').innerText = "৳ " + (d.refToday||0).toFixed(2); 
+        function listenToUserStats(uid) { onSnapshot(doc(db, "users", uid), (docSnap) => { if(docSnap.exists()){ let d = docSnap.data(); userDocData = d; if(d.banned) { logoutUser(); alert("You are banned!"); return; } document.getElementById('stat-app').innerText = Math.max(0, d.approved || 0); document.getElementById('stat-earn').innerText = "৳ " + parseFloat(d.earned||0).toFixed(2); document.getElementById('wallet-bal').innerText = "৳ " + parseFloat(d.earned||0).toFixed(2); document.getElementById('stat-pend').innerText = Math.max(0, d.pending || 0); document.getElementById('stat-proc').innerText = Math.max(0, d.processing || 0); document.getElementById('stat-with').innerText = d.withdrawStatus || "None"; 
+        
+        // Referral stats sync
+        document.getElementById('ref-total-earn').innerText = "৳ " + (d.refEarn||0).toFixed(2); document.getElementById('ref-today-earn').innerText = "৳ " + (d.refToday||0).toFixed(2); 
         
         let avatarUrl = window.getUserAvatar(d.approved, currentUser.photoURL, currentUser.displayName);
         let imgDiv = document.getElementById('u-avatar-img'); let initialDiv = document.getElementById('u-initial');
@@ -928,7 +929,7 @@
                 let allTasks = [];
                 snap.forEach(d => allTasks.push({ id: d.id, ...d.data() }));
                 
-                allTasks.sort((a,b) => new Date(b.time) - new Date(a.time));
+                allTasks.sort((a,b) => new Date(a.time) - new Date(b.time));
 
                 allTasks.forEach((d) => {
                     if(d.status === 'approved') cApp++;
@@ -953,7 +954,7 @@
                     if(tDateStr === todayStr) {
                         todayHtml += card;
                     } else {
-                        yestHtml += card; // Everything else goes here
+                        yestHtml += card; // Everything else (yesterday and older) goes here
                     }
                 });
 
@@ -1190,10 +1191,18 @@
         window.deleteSheetConfig = async (tId) => { if(confirm("Delete this sheet config? Default columns will be used.")) { delete sheetConfigs[tId]; await setDoc(doc(db, "settings", "sheetConfig"), sheetConfigs); showToast("Deleted", "success"); renderSavedSheetsList(); loadSheetConfigUI(); } };
         window.renderSavedSheetsList = () => { let container = document.getElementById('saved-sheets-list'); let html = ''; Object.keys(sheetConfigs).forEach(tId => { let conf = sheetConfigs[tId]; html += `<div class="task-list-item"><div><b style="color:var(--info);">${conf.taskName}</b><div style="font-size:0.8rem; color:var(--muted); margin-top:4px;">Cols: ${conf.cols.join(' > ')}</div></div><button style="background:var(--danger); color:white; border:none; padding:8px 12px; border-radius:8px; cursor:pointer;" onclick="deleteSheetConfig('${tId}')"><i class="fas fa-trash"></i></button></div>`; }); container.innerHTML = html || '<p style="color:var(--muted); font-size:0.9rem;">No custom sheets configured.</p>'; };
 
-        window.nextSheetBatch = async (taskId, currentBatch) => {
+        window.nextSheetBatch = async (taskId, currentBatch, groupKey) => {
             if(!confirm("Create a new sheet for incoming tasks?")) return;
+            
+            let submittedBatches = JSON.parse(localStorage.getItem('submittedBatches') || '[]');
+            if(!submittedBatches.includes(groupKey)) {
+                submittedBatches.push(groupKey);
+                localStorage.setItem('submittedBatches', JSON.stringify(submittedBatches));
+            }
+
             await updateDoc(doc(db, "tasks", taskId), { batchId: increment(1) });
             showToast("New sheet activated!", "success");
+            window.renderLiveSheets();
         };
 
         function setupAdminData() { onSnapshot(doc(db, "settings", "config"), (docSnap) => { if(docSnap.exists()){ let d = docSnap.data(); globalTaskConfig = d; document.getElementById('admin-t-ref').value = d.refPercent || 10; document.getElementById('admin-w-min').value = d.wMin; document.getElementById('admin-w-max').value = d.wMax; document.getElementById('admin-bkash-fee').value = d.bkashFee || 0; document.getElementById('admin-rocket-fee').value = d.rocketFee || 0; document.getElementById('admin-binance-fee').value = d.binanceFee || 0; document.getElementById('admin-w-rate').value = d.dollarRate; document.getElementById('admin-w-inst').value = d.wRules; document.getElementById('admin-notice-input').value = d.notice; document.getElementById('admin-scroll-notice-input').value = d.scrollNotice || ""; document.getElementById('admin-task-rules-input').value = d.taskRules || ""; document.getElementById('admin-tg-link').value = d.tgLink; document.getElementById('admin-wa-link').value = d.waLink; document.getElementById('admin-ac-link').value = d.acLink || ""; } }); }
@@ -1242,6 +1251,8 @@
             let container = document.getElementById('live-sheets-container'); 
             let html = ''; let groups = {}; 
             
+            let submittedBatches = JSON.parse(localStorage.getItem('submittedBatches') || '[]');
+            
             liveSubmissions.forEach(sub => { 
                 let bId = sub.batchId || 1;
                 let sheetKey = sub.activeTaskId + "_" + bId; 
@@ -1258,6 +1269,11 @@
             if(Object.keys(groups).length === 0) { container.innerHTML = '<p style="text-align:center; color:var(--muted);">No active pending tasks to display.</p>'; return; } 
             
             for(let [tId, group] of Object.entries(groups)) { 
+                let isSubmitted = submittedBatches.includes(tId);
+                let subBtnStyle = isSubmitted ? 'background:var(--success); opacity:0.6; pointer-events:none;' : 'background:var(--primary);';
+                let subBtnText = isSubmitted ? '<i class="fas fa-check-circle"></i> Submitted' : '<i class="fas fa-paper-plane"></i> Submit';
+                let subOnClick = isSubmitted ? '' : `onclick="nextSheetBatch('${group.realTaskId}', ${group.batchId}, '${tId}')"`;
+
                 html += `<div class="section-box" style="border-left: 4px solid var(--info);">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
                         <div style="display:flex; align-items:center; gap:12px;">
@@ -1270,7 +1286,7 @@
                     </div>
                     <div style="display:flex; gap:10px;">
                         <button class="btn-main" style="background:var(--success); padding:10px; font-size:1rem; flex:1;" onclick="downloadSingleSheet('${tId}', '${group.name}')"><i class="fas fa-download"></i> Download</button>
-                        <button class="btn-main" style="background:var(--primary); padding:10px; font-size:1rem; flex:1;" onclick="nextSheetBatch('${group.realTaskId}', ${group.batchId})"><i class="fas fa-paper-plane"></i> Submit</button>
+                        <button class="btn-main" style="${subBtnStyle} padding:10px; font-size:1rem; flex:1;" ${subOnClick}>${subBtnText}</button>
                     </div>
                 </div>`; 
             } 
@@ -1297,6 +1313,9 @@
             
             // Reset batchIds for all tasks back to 1
             const tSnap = await getDocs(collection(db, "tasks")); tSnap.forEach(tDoc => { batch.update(tDoc.ref, { batchId: 1 }); });
+
+            // Clear submitted buttons local state
+            localStorage.removeItem('submittedBatches');
 
             if(Object.keys(reportsGroups).length > 0) { await setDoc(doc(collection(db, "reports")), { date: new Date().toLocaleString(), data: reportsGroups, sheetCols: sheetColsMap, timestamp: serverTimestamp() }); } 
             await batch.commit(); showToast(`Smart Reset Complete!`, "success"); 
