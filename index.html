@@ -875,15 +875,17 @@
             
             // 🔥 FAST SUBMISSION & ANIMATION TRIGGER
             btn.disabled = true; btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Submitting...`;
+            
             try {
                 let currentBatchId = activeTaskObj.batchId || 1;
                 let burst = document.getElementById('success-burst'); burst.style.display = 'flex';
                 setTimeout(() => { burst.style.display = 'none'; closeSubPage(); }, 800);
                 
-                // Fire and forget upload
+                // Fire and forget upload (Instant Local Clearing)
+                localStorage.removeItem('ongoingTask');
+                
                 addDoc(collection(db, "submissions"), { taskId: generatedTaskId, activeTaskId: activeTaskObj.id, batchId: currentBatchId, taskName: activeTaskObj.name, taskType: activeTaskObj.type, username: uName, firstName: fName, lastName: lName, fullName: fullName, generatedEmail: genMail, password: pass, fbUid: fbUid, secret2fa: secret, cookie: cookie, recoveryMail: recMail, submittedBy: currentUser.email, uid: currentUser.uid, price: activeTaskObj.price, status: "pending", archived: false, time: new Date().toISOString() }).then(() => {
                     updateDoc(doc(db, "users", currentUser.uid), { pending: increment(1) });
-                    localStorage.removeItem('ongoingTask');
                     showToast("Task Submitted Successfully!", "success");
                 }).catch(e => { showToast("Submission Error!", "error"); btn.disabled = false; });
             } catch(e) { showToast("Error submitting task", "error"); btn.disabled = false; }
@@ -929,7 +931,7 @@
                 let allTasks = [];
                 snap.forEach(d => allTasks.push({ id: d.id, ...d.data() }));
                 
-                allTasks.sort((a,b) => new Date(a.time) - new Date(b.time));
+                allTasks.sort((a,b) => new Date(b.time) - new Date(a.time));
 
                 allTasks.forEach((d) => {
                     if(d.status === 'approved') cApp++;
@@ -1184,7 +1186,6 @@
             }
         };
 
-        // --- Live Sheet Setup (Batches logic inside renderLiveSheets) ---
         window.loadSheetConfigUI = () => { let tId = document.getElementById('sheet-task-select').value; let wrapper = document.getElementById('dynamic-cols-wrapper'); let container = document.getElementById('sheet-cols-container'); if(!tId) { wrapper.style.display = 'none'; return; } wrapper.style.display = 'block'; container.innerHTML = ''; let savedCols = sheetConfigs[tId]?.cols || ["Username", "Password", "Task ID"]; savedCols.forEach(col => addSheetColSelect(col)); };
         window.addSheetColSelect = (val = "") => { let container = document.getElementById('sheet-cols-container'); let sel = document.createElement('select'); sel.className = 'input-box sheet-col-sel'; sel.style.margin = '0'; colOptions.forEach(opt => { let option = document.createElement('option'); option.value = opt; option.text = opt; if(opt === val) option.selected = true; sel.appendChild(option); }); let div = document.createElement('div'); div.style.display = 'flex'; div.style.gap = '10px'; div.style.alignItems = 'center'; let delBtn = document.createElement('button'); delBtn.innerHTML = '<i class="fas fa-times"></i>'; delBtn.style.background = 'var(--danger)'; delBtn.style.color = 'white'; delBtn.style.border = 'none'; delBtn.style.padding = '10px 15px'; delBtn.style.borderRadius = '8px'; delBtn.onclick = () => div.remove(); div.appendChild(sel); div.appendChild(delBtn); container.appendChild(div); };
         window.saveSheetConfig = async (btn) => { let tId = document.getElementById('sheet-task-select').value; if(!tId) return; let activeTask = currentActiveTasks.find(t=>t.id === tId); let sels = document.querySelectorAll('.sheet-col-sel'); let cols = []; sels.forEach(s => cols.push(s.value)); sheetConfigs[tId] = { taskName: activeTask.name, cols: cols }; await withLoading(btn, async () => { await setDoc(doc(db, "settings", "sheetConfig"), sheetConfigs); showToast("Task Columns Saved!", "success"); renderSavedSheetsList(); }); };
@@ -1207,9 +1208,10 @@
 
         function setupAdminData() { onSnapshot(doc(db, "settings", "config"), (docSnap) => { if(docSnap.exists()){ let d = docSnap.data(); globalTaskConfig = d; document.getElementById('admin-t-ref').value = d.refPercent || 10; document.getElementById('admin-w-min').value = d.wMin; document.getElementById('admin-w-max').value = d.wMax; document.getElementById('admin-bkash-fee').value = d.bkashFee || 0; document.getElementById('admin-rocket-fee').value = d.rocketFee || 0; document.getElementById('admin-binance-fee').value = d.binanceFee || 0; document.getElementById('admin-w-rate').value = d.dollarRate; document.getElementById('admin-w-inst').value = d.wRules; document.getElementById('admin-notice-input').value = d.notice; document.getElementById('admin-scroll-notice-input').value = d.scrollNotice || ""; document.getElementById('admin-task-rules-input').value = d.taskRules || ""; document.getElementById('admin-tg-link').value = d.tgLink; document.getElementById('admin-wa-link').value = d.waLink; document.getElementById('admin-ac-link').value = d.acLink || ""; } }); }
         function listenToAdminRealtime() { onSnapshot(collection(db, "users"), snap => { let u=0, b=0, totalProc=0, totalPend=0, html=''; snap.forEach(docSnap => { let d = docSnap.data(); u++; b += (d.earned||0); totalProc += Math.max(0, d.processing||0); totalPend += Math.max(0, d.pending||0); let banBtn = d.banned ? `<button style="background:var(--success); color:white; border:none; padding:8px 12px; border-radius:8px; font-weight:700;" onclick="toggleBan('${docSnap.id}', false)">Unban</button>` : `<button style="background:var(--danger); color:white; border:none; padding:8px 12px; border-radius:8px; font-weight:700;" onclick="toggleBan('${docSnap.id}', true)">Ban</button>`; 
+        let safeName = d.name ? d.name.replace(/'/g, "\\'").replace(/"/g, "&quot;") : "User";
         let avt = window.getUserAvatar(d.approved, d.photo, d.name);
-        html += `<div class="user-card" onclick="openUserModal('${docSnap.id}', '${d.name}', '${d.email}', ${d.earned||0}, ${d.approved||0}, ${d.banned}, '${d.joinDate||'N/A'}')"><div style="display:flex; align-items:center;"><img src="${avt}" style="background:var(--bg); object-fit:contain; padding:2px;"><div><b style="font-size:1.1rem;">${d.name}</b> <span style="font-size:0.7rem; background:var(--primary-gradient); color:white; padding:2px 6px; border-radius:10px; margin-left:5px; white-space:nowrap;">${window.getUserRankName(d.approved)}</span><br><span style="font-size:0.8rem; color:var(--muted);">${d.email}</span></div></div>${banBtn}</div>`; }); 
-        document.getElementById('s-total-users').innerText = u; document.getElementById('s-total-bal').innerText = b.toFixed(2); document.getElementById('s-today-proc').innerText = totalProc; document.getElementById('s-today-pend').innerText = totalPend; document.getElementById('admin-user-list').innerHTML = html; }); onSnapshot(query(collection(db, "submissions"), where("archived", "==", false)), snap => { liveSubmissions = []; let todaySub=0; snap.forEach(docSnap => { let d = docSnap.data(); liveSubmissions.push({id: docSnap.id, ...d}); todaySub++; }); document.getElementById('s-today-sub').innerText = todaySub; renderLiveSheets(); }); onSnapshot(collection(db, "submissions"), snap => { let ts=0, ta=0, tr=0; snap.forEach(docSnap => { let d = docSnap.data(); ts++; if(d.status==='approved') ta++; if(d.status==='rejected') tr++; }); document.getElementById('s-total-task').innerText = ts; document.getElementById('s-tot-app').innerText = ta; document.getElementById('s-tot-rej').innerText = tr; document.getElementById('s-app-rate').innerText = ts>0 ? ((ta/ts)*100).toFixed(1) : 0; }); onSnapshot(collection(db, "withdrawals"), snap => { let wHtml = '', tWith = 0, pCount = 0; snap.forEach(docSnap => { let d = docSnap.data(); if(d.status === 'approved') tWith += d.amount; if(d.status === 'pending') { pCount++; 
+        html += `<div class="user-card" onclick="openUserModal('${docSnap.id}', '${safeName}', '${d.email}', ${d.earned||0}, ${d.approved||0}, ${d.banned}, '${d.joinDate||'N/A'}')"><div style="display:flex; align-items:center;"><img src="${avt}" style="background:var(--bg); object-fit:contain; padding:2px;"><div><b style="font-size:1.1rem;">${d.name}</b> <span style="font-size:0.7rem; background:var(--primary-gradient); color:white; padding:2px 6px; border-radius:10px; margin-left:5px; white-space:nowrap;">${window.getUserRankName(d.approved)}</span><br><span style="font-size:0.8rem; color:var(--muted);">${d.email}</span></div></div>${banBtn}</div>`; }); 
+        document.getElementById('s-total-users').innerText = u; document.getElementById('s-total-bal').innerText = b.toFixed(2); document.getElementById('s-today-proc').innerText = totalProc; document.getElementById('s-today-pend').innerText = totalPend; document.getElementById('admin-user-list').innerHTML = html; }); onSnapshot(query(collection(db, "submissions"), where("archived", "==", false)), snap => { liveSubmissions = []; let todaySub=0; snap.forEach(docSnap => { let d = docSnap.data(); if(d.status === 'pending' || d.status === 'processing') { liveSubmissions.push({id: docSnap.id, ...d}); } todaySub++; }); document.getElementById('s-today-sub').innerText = todaySub; renderLiveSheets(); }); onSnapshot(collection(db, "submissions"), snap => { let ts=0, ta=0, tr=0; snap.forEach(docSnap => { let d = docSnap.data(); ts++; if(d.status==='approved') ta++; if(d.status==='rejected') tr++; }); document.getElementById('s-total-task').innerText = ts; document.getElementById('s-tot-app').innerText = ta; document.getElementById('s-tot-rej').innerText = tr; document.getElementById('s-app-rate').innerText = ts>0 ? ((ta/ts)*100).toFixed(1) : 0; }); onSnapshot(collection(db, "withdrawals"), snap => { let wHtml = '', tWith = 0, pCount = 0; snap.forEach(docSnap => { let d = docSnap.data(); if(d.status === 'approved') tWith += d.amount; if(d.status === 'pending') { pCount++; 
         
         let methodLargeBadge = '';
         if(d.method === 'bkash') methodLargeBadge = `<span style="background:#e2136e; color:white; padding:4px 10px; border-radius:8px; font-size:0.85rem; font-weight:800;"><i class="fas fa-mobile-alt"></i> bKash</span>`;
@@ -1300,7 +1302,7 @@
             
             snap.forEach(docSnap => { 
                 let d = docSnap.data(); 
-                let sheetName = (d.taskName || 'General').substring(0,30); // Groups entirely by taskName (ignores batch parts)
+                let sheetName = (d.taskName || 'General').substring(0,30); 
                 if(!reportsGroups[sheetName]) { 
                     reportsGroups[sheetName] = []; 
                     sheetColsMap[sheetName] = sheetConfigs[d.activeTaskId]?.cols || ["Username", "Password", "Task ID"]; 
@@ -1311,10 +1313,8 @@
             
             const uSnap = await getDocs(collection(db, "users")); uSnap.forEach(d => { let ud = d.data(); let pend = ud.pending || 0; let proc = ud.processing || 0; batch.update(d.ref, { pending: 0, processing: proc + pend, refToday: 0 }); }); 
             
-            // Reset batchIds for all tasks back to 1
             const tSnap = await getDocs(collection(db, "tasks")); tSnap.forEach(tDoc => { batch.update(tDoc.ref, { batchId: 1 }); });
 
-            // Clear submitted buttons local state
             localStorage.removeItem('submittedBatches');
 
             if(Object.keys(reportsGroups).length > 0) { await setDoc(doc(collection(db, "reports")), { date: new Date().toLocaleString(), data: reportsGroups, sheetCols: sheetColsMap, timestamp: serverTimestamp() }); } 
