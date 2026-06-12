@@ -59,6 +59,12 @@
         .auth-switch-text { text-align: center; color: var(--muted); font-size: 0.95rem; margin-top: 10px; }
         .auth-switch-text span { color: var(--primary); font-weight: 700; cursor: pointer; }
 
+        /* Password Wrapper for Eye Icon */
+        .pwd-wrapper { position: relative; width: 100%; margin-bottom: 12px; }
+        .pwd-wrapper .input-box { margin-bottom: 0; padding-right: 45px; }
+        .pwd-eye { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--muted); cursor: pointer; font-size: 1.1rem; transition: color 0.3s; }
+        .pwd-eye:hover { color: var(--primary); }
+
         #toast-container { position: fixed; top: 20px; right: 20px; left: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
         .toast { background: var(--card); color: var(--text); padding: 15px 20px; border-radius: 12px; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-left: 5px solid var(--primary); animation: slideInToast 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; font-weight: 600; font-size: 0.95rem; }
         .toast.success { border-left-color: var(--success); } .toast.error { border-left-color: var(--danger); }
@@ -67,7 +73,7 @@
         .welcome-card { background: var(--primary-gradient); padding: 22px; border-radius: 18px; color: white; margin-bottom: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transition: background 0.4s; }
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
         
-        /* 🔥 Smart Premium Stat Cards (UPDATED with Animation) */
+        /* Smart Premium Stat Cards */
         @keyframes borderPulse { 0% { border-color: rgba(255,255,255,0.05); } 50% { border-color: rgba(79, 70, 229, 0.4); box-shadow: 0 10px 25px rgba(79, 70, 229, 0.15); } 100% { border-color: rgba(255,255,255,0.05); } }
         @keyframes floatIcon { 0% { transform: translateY(0px); filter: drop-shadow(0 0px 0px rgba(0,0,0,0)); } 50% { transform: translateY(-4px) scale(1.1); filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2)); } 100% { transform: translateY(0px); filter: drop-shadow(0 0px 0px rgba(0,0,0,0)); } }
         
@@ -99,6 +105,9 @@
         .data-box.copied { background: transparent !important; border-color: var(--success) !important; box-shadow: 0 0 15px rgba(16, 185, 129, 0.5), inset 0 0 10px rgba(16, 185, 129, 0.2) !important; }
         .data-box.copied * { color: var(--success) !important; }
         
+        /* Locked Sheet Styles */
+        .sheet-locked { background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.03)) !important; border-color: var(--success) !important; }
+
         .support-options { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; display: flex; flex-direction: column; gap: 10px; }
         .support-options.open { max-height: 250px; margin-top: 15px; }
         .input-with-icon { position: relative; width: 100%; margin-bottom: 12px; }
@@ -193,9 +202,18 @@
             100% { opacity: 0; transform: translate(150%, -150%) scale(2) rotate(15deg); }
         }
         .bird-flying { display: block !important; animation: flyWithdrawBird 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        
+        /* Success Animation Overlay */
+        #success-anim-overlay { position: fixed; inset: 0; z-index: 100000; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; }
+        .success-circle { width: 120px; height: 120px; border-radius: 50%; background: var(--success); display: flex; justify-content: center; align-items: center; font-size: 4rem; color: white; transform: scale(0); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; box-shadow: 0 0 50px rgba(16, 185, 129, 0.5); }
+        @keyframes popIn { 0% { transform: scale(0) rotate(-45deg); opacity: 0; } 100% { transform: scale(1) rotate(0); opacity: 1; } }
     </style>
 </head>
 <body>
+
+    <div id="success-anim-overlay">
+        <div class="success-circle"><i class="fas fa-check"></i></div>
+    </div>
 
     <div class="bg-layer">
         <div class="bg-shape shape-1"></div>
@@ -228,7 +246,10 @@
             <div class="auth-slider-container" id="auth-slider">
                 <div class="auth-form">
                     <input type="email" id="log-email" class="input-box" placeholder="Email Address">
-                    <input type="password" id="log-pass" class="input-box" placeholder="Password">
+                    <div class="pwd-wrapper">
+                        <input type="password" id="log-pass" class="input-box" placeholder="Password">
+                        <i class="fas fa-eye pwd-eye" onclick="togglePwd('log-pass', this)"></i>
+                    </div>
                     <button class="btn-main" onclick="loginWithEmail(this)">Login Securely</button>
                     <div style="display:flex; align-items:center; gap:10px; margin:5px 0;"><hr style="flex:1; border-color:rgba(255,255,255,0.1);"><span style="color:var(--muted); font-size:0.8rem;">OR</span><hr style="flex:1; border-color:rgba(255,255,255,0.1);"></div>
                     <button class="google-btn" onclick="loginGoogle()"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="22"> Google Login</button>
@@ -237,7 +258,10 @@
                 <div class="auth-form">
                     <input type="text" id="reg-name" class="input-box" placeholder="Full Name">
                     <input type="email" id="reg-email" class="input-box" placeholder="Email Address">
-                    <input type="password" id="reg-pass" class="input-box" placeholder="Create Password">
+                    <div class="pwd-wrapper">
+                        <input type="password" id="reg-pass" class="input-box" placeholder="Create Password">
+                        <i class="fas fa-eye pwd-eye" onclick="togglePwd('reg-pass', this)"></i>
+                    </div>
                     <input type="text" id="reg-ref" class="input-box" placeholder="Referral ID (Optional)">
                     <button class="btn-main" onclick="registerWithEmail(this)" style="margin-top:5px;">Create Account</button>
                     <p class="auth-switch-text">Already have an account? <span onclick="toggleAuth(false)">Login</span></p>
@@ -517,7 +541,6 @@
         </div>
 
         <div id="admin-live-sheets" class="page" style="background:var(--bg); z-index:200;"><header class="header"><h2 onclick="closeAdminPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Live Files</h2></header><div class="container" id="live-sheets-container"><p style="text-align:center; color:var(--muted);">Loading Files...</p></div></div>
-        <div id="admin-live-sheet-view" class="custom-modal" style="z-index: 300;"><header class="header"><h2 onclick="closeSubPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> <span id="live-sheet-title">Sheet</span></h2><button id="dl-single-sheet-btn" style="background:none; border:none; color:var(--success); font-size:1.4rem; cursor:pointer;"><i class="fas fa-download"></i></button></header><div class="container" id="single-sheet-container"></div></div>
         
         <div id="admin-withdraw-manage" class="page" style="background:var(--bg); z-index:200;"><header class="header"><h2 onclick="closeAdminPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Withdraw Manage</h2></header><div class="container"><div class="section-box"><h4 style="margin-bottom:15px; font-weight:800;">Withdraw Settings</h4><div style="display:flex; gap:10px;"><input type="number" id="admin-w-min" class="input-box" placeholder="Min (৳)"><input type="number" id="admin-w-max" class="input-box" placeholder="Max (৳)"></div><div style="display:flex; gap:10px; margin-top:5px;"><input type="number" id="admin-bkash-fee" class="input-box" placeholder="bKash Fee (%)"><input type="number" id="admin-rocket-fee" class="input-box" placeholder="Rocket Fee (%)"><input type="number" id="admin-binance-fee" class="input-box" placeholder="Binance Fee (%)"></div><input type="number" id="admin-w-rate" class="input-box" placeholder="Dollar Rate (e.g. 122)"><textarea id="admin-w-inst" class="input-box" rows="2" placeholder="Withdraw rules..."></textarea><button class="btn-main" onclick="saveWithdrawSettings(this)">Save Settings</button></div><h4 style="margin-bottom:15px; font-weight:800;">Pending Requests</h4><div id="admin-w-requests"></div></div></div>
         <div id="admin-withdraw-details" class="custom-modal" style="z-index:300;"><header class="header"><h2 onclick="closeSubPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Request Details</h2></header><div class="container" id="admin-wd-content"></div></div>
@@ -595,10 +618,8 @@
             return 'Newbie';
         };
 
-        // --- Copy Globally ---
         window.copyDataText = (text) => { navigator.clipboard.writeText(text); };
 
-        // --- Read URL Param for Referral Auto-Fill ---
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const refCode = urlParams.get('ref');
@@ -610,10 +631,15 @@
             }
         });
 
-        // --- Window Cancel/Close task (Clears localstorage) ---
         window.cancelAndCloseTask = () => {
             localStorage.removeItem('ongoingTask');
             window.closeSubPage();
+        };
+
+        window.togglePwd = (id, icon) => {
+            let input = document.getElementById(id);
+            if (input.type === "password") { input.type = "text"; icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash'); }
+            else { input.type = "password"; icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye'); }
         };
 
         async function withLoading(btnEl, asyncFn) { if(!btnEl || btnEl.disabled) return; let originalText = btnEl.innerHTML; btnEl.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Wait...`; btnEl.disabled = true; try { await asyncFn(); } catch(e) { console.error(e); } finally { btnEl.innerHTML = originalText; btnEl.disabled = false; } }
@@ -640,7 +666,6 @@
             const userRef = doc(db, "users", user.uid); 
             const snap = await getDoc(userRef); 
             
-            // Generate 6 character short code
             let newShortId = Math.random().toString(36).substring(2, 8).toUpperCase();
             
             if (!snap.exists()) { 
@@ -796,7 +821,6 @@
         window.openTaskModal = (taskId) => {
             activeTaskObj = currentActiveTasks.find(t => t.id === taskId); if(!activeTaskObj) return showToast("Task not found!", "error");
             
-            // LocalStorage Persistence Logic
             let ongoing = null;
             try { ongoing = JSON.parse(localStorage.getItem('ongoingTask')); } catch(e){}
             
@@ -861,19 +885,28 @@
             
             fName = document.getElementById('task-firstname').innerText; lName = document.getElementById('task-lastname').innerText; fullName = document.getElementById('task-fullname').innerText;
             if(activeTaskObj.type === 'gmail') { genMail = document.getElementById('task-gengmail').innerText; recMail = activeTaskObj.recoveryMail; }
+            
             await withLoading(btn, async () => { 
-                await addDoc(collection(db, "submissions"), { taskId: generatedTaskId, activeTaskId: activeTaskObj.id, taskName: activeTaskObj.name, taskType: activeTaskObj.type, username: uName, firstName: fName, lastName: lName, fullName: fullName, generatedEmail: genMail, password: pass, fbUid: fbUid, secret2fa: secret, cookie: cookie, recoveryMail: recMail, submittedBy: currentUser.email, uid: currentUser.uid, price: activeTaskObj.price, status: "pending", archived: false, time: new Date().toISOString() }); 
+                let batchId = (globalTaskConfig.taskBatches && globalTaskConfig.taskBatches[activeTaskObj.id]) ? globalTaskConfig.taskBatches[activeTaskObj.id] : 1;
+                
+                await addDoc(collection(db, "submissions"), { taskId: generatedTaskId, activeTaskId: activeTaskObj.id, taskName: activeTaskObj.name, taskType: activeTaskObj.type, username: uName, firstName: fName, lastName: lName, fullName: fullName, generatedEmail: genMail, password: pass, fbUid: fbUid, secret2fa: secret, cookie: cookie, recoveryMail: recMail, submittedBy: currentUser.email, uid: currentUser.uid, price: activeTaskObj.price, status: "pending", archived: false, batchId: batchId, time: new Date().toISOString() }); 
                 await updateDoc(doc(db, "users", currentUser.uid), { pending: increment(1) }); 
-                localStorage.removeItem('ongoingTask'); // Clear persistence on success
-                showToast("Task Submitted Successfully!", "success"); 
-                closeSubPage(); 
+                
+                localStorage.removeItem('ongoingTask'); // Instant fast clear for next open
+                
+                let overlay = document.getElementById('success-anim-overlay');
+                overlay.style.display = 'flex';
+                setTimeout(() => { 
+                    overlay.style.display = 'none'; 
+                    closeSubPage(); 
+                    showToast("Task Submitted Successfully!", "success"); 
+                }, 800);
             });
         };
 
         window.startTgTask = (link, btn) => { if(!link) return showToast("No link available", "error"); window.open(link, '_blank'); let tgBtn = btn.nextElementSibling; if(tgBtn && tgBtn.id.startsWith('tg-verify-btn')) tgBtn.style.display = 'flex'; };
         window.verifyTgTask = async (taskId, price, btn) => { await withLoading(btn, async () => { await new Promise(r => setTimeout(r, 2000)); await updateDoc(doc(db, "users", currentUser.uid), { tgJoined: true, earned: increment(price) }); showToast("Verification Success! Reward added.", "success"); btn.parentElement.style.display = 'none'; }); };
 
-        // --- User Task History Logic (Today & Yesterday Tabs) ---
         window.switchHistoryTab = (tab) => {
             if(tab === 'today') {
                 document.getElementById('th-today-items').style.display = 'block';
@@ -907,11 +940,9 @@
                 
                 let todayStr = new Date().toLocaleDateString('en-GB');
                 let yDate = new Date(); yDate.setDate(yDate.getDate() - 1);
-                let yesterdayStr = yDate.toLocaleDateString('en-GB');
 
                 let allTasks = [];
                 snap.forEach(d => allTasks.push({ id: d.id, ...d.data() }));
-                
                 allTasks.sort((a,b) => new Date(b.time) - new Date(a.time));
 
                 allTasks.forEach((d) => {
@@ -921,7 +952,6 @@
                     if(d.status === 'processing') cProc++;
 
                     let tDateStr = new Date(d.time).toLocaleDateString('en-GB');
-                    
                     let taskNameDisplay = `<div onclick="window.copyDataText('${d.taskId}'); showToast('Task ID Copied!', 'success')" style="cursor:pointer; display:flex; align-items:center; gap:8px;">${d.taskId} <i class="fas fa-copy" style="color:var(--primary); font-size:1rem;"></i></div>`;
                     let subTitle = d.status === 'rejected' ? `<span style="color:var(--danger)">User: ${d.username || 'N/A'}</span>` : `${new Date(d.time).toLocaleTimeString()}`;
                     let color = d.status === 'approved' ? 'var(--success)' : d.status === 'rejected' ? 'var(--danger)' : d.status === 'processing' ? 'var(--info)' : 'var(--warning)';
@@ -937,7 +967,7 @@
                     if(tDateStr === todayStr) {
                         todayHtml += card;
                     } else {
-                        yestHtml += card; // Everything else (yesterday and older) goes here
+                        yestHtml += card; 
                     }
                 });
 
@@ -995,7 +1025,6 @@
                 await addDoc(collection(db, "withdrawals"), { uid: currentUser.uid, name: userDocData.name, method: window.wMethod, account: acc, amount: amt, netAmount: net, currencyAmount: currAmt, fee: fee, status: "pending", time: new Date().toISOString() }); 
                 await updateDoc(doc(db, "users", currentUser.uid), { earned: increment(-amt), withdrawStatus: "Pending" }); 
                 
-                // Bird Flying Animation Trigger
                 let bird = document.getElementById('withdraw-bird');
                 if(bird) {
                     bird.classList.remove('bird-flying');
@@ -1013,7 +1042,6 @@
         function listenToWithdrawHistory(uid) { onSnapshot(query(collection(db, "withdrawals"), where("uid", "==", uid)), (snap) => { let docsArr = []; snap.forEach(d => { docsArr.push({id: d.id, ...d.data()}); }); docsArr.sort((a,b) => new Date(b.time) - new Date(a.time)); let html = ''; let latestHtml = ''; docsArr.forEach((data, index) => { let color = data.status==='approved'?'var(--success)':data.status==='rejected'?'var(--danger)':'var(--warning)'; let card = `<div class="section-box" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;"><div><h4 style="color:var(--primary); font-weight:800;">৳ ${data.amount}</h4><p style="font-size:0.85rem; color:var(--muted); font-weight:600; margin-top:4px;">${data.method.toUpperCase()} - <span style="color:var(--text);">${data.account}</span></p></div><span style="background:${color}; color:white; padding:6px 12px; border-radius:12px; font-size:0.8rem; font-weight:800;">${data.status.toUpperCase()}</span></div>`; html += card; if(index === 0) latestHtml = `<h4 style="margin-bottom:12px; font-size:1.1rem; font-weight:800;">Latest Withdraw Status</h4>` + card; }); document.getElementById('w-history-list').innerHTML = html || '<p style="text-align:center; color:var(--muted); font-weight:600; margin-top:20px;">No history found.</p>'; document.getElementById('wallet-recent-withdraw').innerHTML = latestHtml; }); }
         window.updateUserName = async (btn) => { let newName = document.getElementById('setting-name-input').value; if(!newName) return; await withLoading(btn, async () => { await updateProfile(auth.currentUser, { displayName: newName }); await updateDoc(doc(db, "users", currentUser.uid), { name: newName }); updateProfileUI(auth.currentUser); showToast("Name Updated!", "success"); }); }; window.deleteUserAccount = async () => { if(confirm("Account will be permanently deleted!")) { try { await deleteUser(auth.currentUser); } catch(e) { showToast("Login again to delete.", "error"); } } };
 
-        // --- Admin Functions ---
         window.toggleTaskInputs = () => { let type = document.getElementById('new-task-type').value; document.getElementById('standard-inputs').style.display = type === 'tg' ? 'none' : 'block'; document.getElementById('gmail-inputs').style.display = type === 'gmail' ? 'block' : 'none'; document.getElementById('tg-inputs').style.display = type === 'tg' ? 'block' : 'none'; document.getElementById('uid-toggle-box').style.display = type === 'fb' ? 'block' : 'none'; document.getElementById('universal-2fa-box').style.display = type === 'tg' ? 'none' : 'block'; document.getElementById('cookie-toggle-box').style.display = (type === 'tg' || type === 'gmail') ? 'none' : 'block'; };
         
         window.editAdminTask = (id) => {
@@ -1064,7 +1092,6 @@
         };
         window.deleteAdminTask = async (id) => { if(confirm("Delete this task?")) { await deleteDoc(doc(db, "tasks", id)); showToast("Deleted", "success"); } };
         
-        // --- NEW: Admin Search Task by ID ---
         window.adminSearchTask = async () => {
             let tid = document.getElementById('admin-search-tid').value.trim().toUpperCase();
             if(!tid) return showToast("Enter Task ID!", "error");
@@ -1132,11 +1159,10 @@
                     await updateDoc(doc(db, "users", uid), upds);
                     showToast("Task Rejected!", "success");
                 }
-                window.adminSearchTask(); // Re-trigger search to update UI
+                window.adminSearchTask(); 
             });
         };
 
-        // --- NEW: Admin view user task history ---
         window.adminViewUserHistory = async (uid, name) => {
             document.getElementById('auh-name').innerText = name;
             openSubPage('admin-user-history-modal');
@@ -1173,7 +1199,7 @@
         window.deleteSheetConfig = async (tId) => { if(confirm("Delete this sheet config? Default columns will be used.")) { delete sheetConfigs[tId]; await setDoc(doc(db, "settings", "sheetConfig"), sheetConfigs); showToast("Deleted", "success"); renderSavedSheetsList(); loadSheetConfigUI(); } };
         window.renderSavedSheetsList = () => { let container = document.getElementById('saved-sheets-list'); let html = ''; Object.keys(sheetConfigs).forEach(tId => { let conf = sheetConfigs[tId]; html += `<div class="task-list-item"><div><b style="color:var(--info);">${conf.taskName}</b><div style="font-size:0.8rem; color:var(--muted); margin-top:4px;">Cols: ${conf.cols.join(' > ')}</div></div><button style="background:var(--danger); color:white; border:none; padding:8px 12px; border-radius:8px; cursor:pointer;" onclick="deleteSheetConfig('${tId}')"><i class="fas fa-trash"></i></button></div>`; }); container.innerHTML = html || '<p style="color:var(--muted); font-size:0.9rem;">No custom sheets configured.</p>'; };
 
-        function setupAdminData() { onSnapshot(doc(db, "settings", "config"), (docSnap) => { if(docSnap.exists()){ let d = docSnap.data(); globalTaskConfig = d; document.getElementById('admin-t-ref').value = d.refPercent || 10; document.getElementById('admin-w-min').value = d.wMin; document.getElementById('admin-w-max').value = d.wMax; document.getElementById('admin-bkash-fee').value = d.bkashFee || 0; document.getElementById('admin-rocket-fee').value = d.rocketFee || 0; document.getElementById('admin-binance-fee').value = d.binanceFee || 0; document.getElementById('admin-w-rate').value = d.dollarRate; document.getElementById('admin-w-inst').value = d.wRules; document.getElementById('admin-notice-input').value = d.notice; document.getElementById('admin-scroll-notice-input').value = d.scrollNotice || ""; document.getElementById('admin-task-rules-input').value = d.taskRules || ""; document.getElementById('admin-tg-link').value = d.tgLink; document.getElementById('admin-wa-link').value = d.waLink; document.getElementById('admin-ac-link').value = d.acLink || ""; } }); }
+        function setupAdminData() { onSnapshot(doc(db, "settings", "config"), (docSnap) => { if(docSnap.exists()){ let d = docSnap.data(); globalTaskConfig = d; document.getElementById('admin-t-ref').value = d.refPercent || 10; document.getElementById('admin-w-min').value = d.wMin; document.getElementById('admin-w-max').value = d.wMax; document.getElementById('admin-bkash-fee').value = d.bkashFee || 0; document.getElementById('admin-rocket-fee').value = d.rocketFee || 0; document.getElementById('admin-binance-fee').value = d.binanceFee || 0; document.getElementById('admin-w-rate').value = d.dollarRate; document.getElementById('admin-w-inst').value = d.wRules; document.getElementById('admin-notice-input').value = d.notice; document.getElementById('admin-scroll-notice-input').value = d.scrollNotice || ""; document.getElementById('admin-task-rules-input').value = d.taskRules || ""; document.getElementById('admin-tg-link').value = d.tgLink; document.getElementById('admin-wa-link').value = d.waLink; document.getElementById('admin-ac-link').value = d.acLink || ""; if(currentUser && adminEmails.includes(currentUser.email)) renderLiveSheets(); } }); }
         function listenToAdminRealtime() { onSnapshot(collection(db, "users"), snap => { let u=0, b=0, totalProc=0, totalPend=0, html=''; snap.forEach(docSnap => { let d = docSnap.data(); u++; b += (d.earned||0); totalProc += Math.max(0, d.processing||0); totalPend += Math.max(0, d.pending||0); let banBtn = d.banned ? `<button style="background:var(--success); color:white; border:none; padding:8px 12px; border-radius:8px; font-weight:700;" onclick="toggleBan('${docSnap.id}', false)">Unban</button>` : `<button style="background:var(--danger); color:white; border:none; padding:8px 12px; border-radius:8px; font-weight:700;" onclick="toggleBan('${docSnap.id}', true)">Ban</button>`; 
         let avt = window.getUserAvatar(d.approved, d.photo, d.name);
         html += `<div class="user-card" onclick="openUserModal('${docSnap.id}', '${d.name}', '${d.email}', ${d.earned||0}, ${d.approved||0}, ${d.banned}, '${d.joinDate||'N/A'}')"><div style="display:flex; align-items:center;"><img src="${avt}" style="background:var(--bg); object-fit:contain; padding:2px;"><div><b style="font-size:1.1rem;">${d.name}</b> <span style="font-size:0.7rem; background:var(--primary-gradient); color:white; padding:2px 6px; border-radius:10px; margin-left:5px; white-space:nowrap;">${window.getUserRankName(d.approved)}</span><br><span style="font-size:0.8rem; color:var(--muted);">${d.email}</span></div></div>${banBtn}</div>`; }); 
@@ -1274,14 +1300,125 @@
             return obj; 
         };
         
-        window.renderLiveSheets = () => { let container = document.getElementById('live-sheets-container'); let html = ''; let groups = {}; liveSubmissions.forEach(sub => { let sheetKey = sub.activeTaskId; if(!groups[sheetKey]) groups[sheetKey] = { id: sheetKey, name: sub.taskName || 'Unknown Task', data: [] }; groups[sheetKey].data.push(formatReportData(sub, sub.activeTaskId, sub.taskName)); }); if(Object.keys(groups).length === 0) { container.innerHTML = '<p style="text-align:center; color:var(--muted);">No active pending tasks to display.</p>'; return; } for(let [tId, group] of Object.entries(groups)) { html += `<div class="section-box" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; border-left: 4px solid var(--primary);" onclick="openSingleLiveSheet('${tId}')"><div style="display:flex; align-items:center; gap:15px;"><i class="fas fa-file-excel" style="font-size:2rem; color:var(--success);"></i><div><b style="font-size:1.1rem; color:var(--primary);">${group.name}</b><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">${group.data.length} Submissions</p></div></div><i class="fas fa-chevron-right" style="color:var(--muted);"></i></div>`; } container.innerHTML = html; window.currentLiveGroups = groups; };
-        window.openSingleLiveSheet = (tId) => { let group = window.currentLiveGroups[tId]; if(!group) return; document.getElementById('live-sheet-title').innerText = group.name; let html = `<div class="live-table-wrapper"><table class="live-table"><thead><tr>`; let cols = sheetConfigs[tId]?.cols || ["Username", "Password", "2FA Code", "Task ID"]; cols.forEach(col => { html += `<th>${col}</th>`; }); html += `</tr></thead><tbody>`; group.data.forEach(row => { html += `<tr>`; cols.forEach(col => html += `<td>${row[col]||'-'}</td>`); html += `</tr>`; }); html += `</tbody></table></div>`; document.getElementById('single-sheet-container').innerHTML = html; document.getElementById('dl-single-sheet-btn').onclick = () => downloadSingleSheet(tId, group.name); openSubPage('admin-live-sheet-view'); };
-        window.downloadSingleSheet = (tId, name) => { let group = window.currentLiveGroups[tId]; if(!group || group.data.length === 0) return; let cols = sheetConfigs[tId]?.cols || ["Username", "Password", "2FA Code", "Task ID"]; const ws = XLSX.utils.json_to_sheet(group.data, { header: cols }); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Data"); XLSX.writeFile(wb, `Taskesy_${name.replace(/\s+/g, '_')}_Live.xlsx`); showToast("Downloaded!", "success"); };
+        window.renderLiveSheets = () => { 
+            let container = document.getElementById('live-sheets-container'); 
+            let html = ''; 
+            let taskGroups = {}; 
+
+            liveSubmissions.forEach(sub => { 
+                let tId = sub.activeTaskId; 
+                let bId = sub.batchId || 1;
+                if(!taskGroups[tId]) taskGroups[tId] = { id: tId, name: sub.taskName || 'Unknown Task', batches: {} }; 
+                if(!taskGroups[tId].batches[bId]) taskGroups[tId].batches[bId] = [];
+                
+                taskGroups[tId].batches[bId].push(formatReportData(sub, tId, sub.taskName)); 
+            }); 
+            
+            if(Object.keys(taskGroups).length === 0) { 
+                container.innerHTML = '<p style="text-align:center; color:var(--muted);">No active pending tasks to display.</p>'; 
+                return; 
+            } 
+            
+            for(let [tId, group] of Object.entries(taskGroups)) { 
+                let currentActiveBatch = (globalTaskConfig.taskBatches && globalTaskConfig.taskBatches[tId]) ? globalTaskConfig.taskBatches[tId] : 1;
+
+                html += `<div class="section-box" style="margin-bottom:20px; border-color:var(--primary);">
+                            <h3 style="margin-bottom:10px; font-weight:800; color:var(--primary);"><i class="fas fa-tasks"></i> ${group.name}</h3>`;
+
+                let batchKeys = Object.keys(group.batches).map(Number).sort((a,b) => a-b);
+                
+                batchKeys.forEach(bId => {
+                    let isLocked = bId < currentActiveBatch;
+                    let count = group.batches[bId].length;
+                    let lockStyle = isLocked ? 'sheet-locked' : '';
+                    let lockIcon = isLocked ? '<i class="fas fa-lock" style="color:var(--success);"></i> Locked' : '<i class="fas fa-lock-open" style="color:var(--warning);"></i> Active';
+                    
+                    let actionBtn = isLocked 
+                        ? `<button class="btn-main" disabled style="background:var(--muted); padding:8px 12px; font-size:0.85rem; width:auto; box-shadow:none;">Submitted</button>`
+                        : `<button class="btn-main" style="background:var(--primary); padding:8px 12px; font-size:0.85rem; width:auto;" onclick="lockAdminSheet('${tId}', ${bId})"><i class="fas fa-check-double"></i> Submit/Lock</button>`;
+
+                    html += `<div class="data-box ${lockStyle}" style="margin-bottom:10px; cursor:default;">
+                                <div style="display:flex; flex-direction:column; gap:5px;">
+                                    <b style="font-size:1.1rem;">Sheet ${bId} <span style="font-size:0.75rem; background:var(--bg); padding:2px 6px; border-radius:6px; margin-left:5px;">${count} Tasks</span></b>
+                                    <div style="font-size:0.8rem; font-weight:700;">${lockIcon}</div>
+                                </div>
+                                <div style="display:flex; gap:10px;">
+                                    <button class="btn-main" style="background:var(--success); padding:8px 12px; font-size:0.85rem; width:auto;" onclick="downloadBatchSheet('${tId}', ${bId})"><i class="fas fa-download"></i> DL</button>
+                                    ${actionBtn}
+                                </div>
+                             </div>`;
+                });
+                html += `</div>`;
+            } 
+            container.innerHTML = html; 
+            window.currentTaskGroups = taskGroups; 
+        };
+
+        window.downloadBatchSheet = (tId, bId) => {
+            let group = window.currentTaskGroups[tId];
+            if(!group || !group.batches[bId]) return showToast("Data not found", "error");
+            let data = group.batches[bId];
+            let cols = sheetConfigs[tId]?.cols || ["Username", "Password", "2FA Code", "Task ID"];
+            const ws = XLSX.utils.json_to_sheet(data, { header: cols });
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+            XLSX.writeFile(wb, `Taskesy_${group.name.replace(/\s+/g, '_')}_Sheet${bId}.xlsx`);
+            showToast("Downloaded!", "success");
+        };
+
+        window.lockAdminSheet = async (tId, bId) => {
+            if(!confirm("Are you sure? This will lock this sheet and create a new one for upcoming tasks.")) return;
+            let currentBatches = globalTaskConfig.taskBatches || {};
+            let nextBatch = (currentBatches[tId] || 1) + 1;
+            currentBatches[tId] = nextBatch;
+            await setDoc(doc(db, "settings", "config"), { taskBatches: currentBatches }, {merge:true});
+            showToast("Sheet Locked & New Sheet Created!", "success");
+        };
+
+        window.resetToday = async (btn) => { 
+            if(!confirm("Are you sure? This will save all active files to history and shift Pending to Processing.")) return; 
+            await withLoading(btn, async () => { 
+                const q = query(collection(db, "submissions"), where("archived", "==", false)); 
+                const snap = await getDocs(q); 
+                let reportsGroups = {}; 
+                let sheetColsMap = {}; 
+                let batch = writeBatch(db); 
+                
+                snap.forEach(docSnap => { 
+                    let d = docSnap.data(); 
+                    let sheetName = (d.taskName || 'General').substring(0,30); 
+                    if(!reportsGroups[sheetName]) { 
+                        reportsGroups[sheetName] = []; 
+                        sheetColsMap[sheetName] = sheetConfigs[d.activeTaskId]?.cols || ["Username", "Password", "Task ID"]; 
+                    } 
+                    // Batch logic ignored here, effectively merging them all!
+                    reportsGroups[sheetName].push(formatReportData(d, d.activeTaskId, d.taskName)); 
+                    batch.update(docSnap.ref, { archived: true, status: 'processing' }); 
+                }); 
+                
+                const uSnap = await getDocs(collection(db, "users")); 
+                uSnap.forEach(d => { 
+                    let ud = d.data(); 
+                    let pend = ud.pending || 0; 
+                    let proc = ud.processing || 0; 
+                    batch.update(d.ref, { pending: 0, processing: proc + pend, refToday: 0 }); 
+                }); 
+                
+                if(Object.keys(reportsGroups).length > 0) { 
+                    await setDoc(doc(collection(db, "reports")), { date: new Date().toLocaleString(), data: reportsGroups, sheetCols: sheetColsMap, timestamp: serverTimestamp() }); 
+                } 
+
+                // Reset Batches Count
+                await setDoc(doc(db, "settings", "config"), { taskBatches: {} }, {merge:true});
+
+                await batch.commit(); 
+                showToast(`Smart Reset Complete!`, "success"); 
+            }); 
+        };
         
-        window.resetToday = async (btn) => { if(!confirm("Are you sure? This will save all active files to history and shift Pending to Processing.")) return; await withLoading(btn, async () => { const q = query(collection(db, "submissions"), where("archived", "==", false)); const snap = await getDocs(q); let reportsGroups = {}; let sheetColsMap = {}; let batch = writeBatch(db); snap.forEach(docSnap => { let d = docSnap.data(); let sheetName = (d.taskName || 'General').substring(0,30); if(!reportsGroups[sheetName]) { reportsGroups[sheetName] = []; sheetColsMap[sheetName] = sheetConfigs[d.activeTaskId]?.cols || ["Username", "Password", "Task ID"]; } reportsGroups[sheetName].push(formatReportData(d, d.activeTaskId, d.taskName)); batch.update(docSnap.ref, { archived: true, status: 'processing' }); }); const uSnap = await getDocs(collection(db, "users")); uSnap.forEach(d => { let ud = d.data(); let pend = ud.pending || 0; let proc = ud.processing || 0; batch.update(d.ref, { pending: 0, processing: proc + pend, refToday: 0 }); }); if(Object.keys(reportsGroups).length > 0) { await setDoc(doc(collection(db, "reports")), { date: new Date().toLocaleString(), data: reportsGroups, sheetCols: sheetColsMap, timestamp: serverTimestamp() }); } await batch.commit(); showToast(`Smart Reset Complete!`, "success"); }); };
         window.downloadArchivedSheet = async (docId, sheetName) => { const snap = await getDoc(doc(db, "reports", docId)); if(!snap.exists()) return showToast("File not found!", "error"); let rData = snap.data(); let tasks = rData.data[sheetName]; if(!tasks || tasks.length === 0) return showToast("No tasks inside", "error"); const wb = XLSX.utils.book_new(); let cols = (rData.sheetCols && rData.sheetCols[sheetName]) ? rData.sheetCols[sheetName] : Object.keys(tasks[0]); const ws = XLSX.utils.json_to_sheet(tasks, { header: cols }); XLSX.utils.book_append_sheet(wb, ws, "Data"); XLSX.writeFile(wb, `Taskesy_${sheetName.replace(/[^a-zA-Z0-9]/g, '_')}_${rData.date.split(',')[0].replace(/\//g,'-')}.xlsx`); showToast("File Downloaded!", "success"); };
         
         window.navPage = (pageId, el) => { if(history.state && history.state.page === pageId) return; history.pushState({page: pageId}, null, "#" + pageId); document.querySelectorAll('#user-app .page').forEach(p => p.classList.remove('active')); document.getElementById(pageId).classList.add('active'); if(el) { document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); } }; window.openSubPage = (id) => { history.pushState({page: history.state?.page || 'home-page'}, null, "#" + id); document.getElementById(id).classList.add('active'); }; window.closeSubPage = () => { history.back(); }; window.openAdminPage = (id) => { if(history.state && history.state.page === id) return; history.pushState({page: id}, null, "#" + id); document.querySelectorAll('#admin-app .page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); }; window.closeAdminPage = () => { history.back(); }; window.copyData = (el, id) => { navigator.clipboard.writeText(document.getElementById(id).innerText); el.classList.add('copied'); showToast("Copied to clipboard!", "success"); };
     </script>
 </body>
-    </html>
+</html>
