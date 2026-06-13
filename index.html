@@ -877,22 +877,37 @@
         window.validateUID = () => { let val = document.getElementById('uid-input').value; window.taskValidation.isUIDDone = (val.length > 3); window.checkTaskSubmitStatus(); };
         window.generateOTP = (isRefresh=false) => { let secret = document.getElementById('2fa-secret').value.replace(/\s+/g, '').toUpperCase(); if(!secret) return showToast("2FA Secret required!", "error"); try { let totp = new OTPAuth.TOTP({ algorithm: 'SHA1', digits: 6, period: 30, secret: OTPAuth.Secret.fromBase32(secret) }); document.getElementById('generated-otp').innerText = totp.generate(); document.getElementById('otp-result-box').style.display = 'flex'; window.taskValidation.is2FADone = true; window.checkTaskSubmitStatus(); if(isRefresh) { showToast("OTP Refreshed!", "success"); } else { showToast("OTP Generated!", "success"); } } catch(e) { showToast("Invalid Secret!", "error"); window.taskValidation.is2FADone = false; window.checkTaskSubmitStatus(); } };
 
-        window.submitTaskReal = async (btn) => {
-            if(btn.disabled) return; const uName = document.getElementById('task-username').innerText; const pass = document.getElementById('task-password').innerText; let secret = "", cookie = "", fbUid = "", recMail = "", fName = "", lName = "", genMail = "", fullName = "";
+                window.submitTaskReal = async (btn) => {
+            if(btn.disabled) return; 
+            const uName = document.getElementById('task-username').innerText; 
+            const pass = document.getElementById('task-password').innerText; 
+            let secret = "", cookie = "", fbUid = "", recMail = "", fName = "", lName = "", genMail = "", fullName = "";
+            
             if(activeTaskObj.is2FA) { secret = document.getElementById('2fa-secret').value; if(!secret) return showToast("2FA Secret required!", "error"); }
             if(activeTaskObj.isCookie) { cookie = document.getElementById('cookie-input').value; if(cookie.length < 20) return showToast("Invalid Cookies!", "error"); }
             if(activeTaskObj.isUID) { fbUid = document.getElementById('uid-input').value; if(fbUid.length < 3) return showToast("Invalid UID!", "error"); }
             
-            fName = document.getElementById('task-firstname').innerText; lName = document.getElementById('task-lastname').innerText; fullName = document.getElementById('task-fullname').innerText;
+            fName = document.getElementById('task-firstname').innerText; 
+            lName = document.getElementById('task-lastname').innerText; 
+            fullName = document.getElementById('task-fullname').innerText;
             if(activeTaskObj.type === 'gmail') { genMail = document.getElementById('task-gengmail').innerText; recMail = activeTaskObj.recoveryMail; }
             
             await withLoading(btn, async () => { 
-                let batchId = (globalTaskConfig.taskBatches && globalTaskConfig.taskBatches[activeTaskObj.id]) ? globalTaskConfig.taskBatches[activeTaskObj.id] : 1;
+                // 🔴 Server থেকে সরাসরি লাইভ চেক করবে যে কোন শিটটি চালু আছে
+                let configSnap = await getDoc(doc(db, "settings", "config"));
+                let latestConfig = configSnap.exists() ? configSnap.data() : {};
+                let batchId = (latestConfig.taskBatches && latestConfig.taskBatches[activeTaskObj.id]) ? latestConfig.taskBatches[activeTaskObj.id] : 1;
                 
-                await addDoc(collection(db, "submissions"), { taskId: generatedTaskId, activeTaskId: activeTaskObj.id, taskName: activeTaskObj.name, taskType: activeTaskObj.type, username: uName, firstName: fName, lastName: lName, fullName: fullName, generatedEmail: genMail, password: pass, fbUid: fbUid, secret2fa: secret, cookie: cookie, recoveryMail: recMail, submittedBy: currentUser.email, uid: currentUser.uid, price: activeTaskObj.price, status: "pending", archived: false, batchId: batchId, time: new Date().toISOString() }); 
+                await addDoc(collection(db, "submissions"), { 
+                    taskId: generatedTaskId, activeTaskId: activeTaskObj.id, taskName: activeTaskObj.name, taskType: activeTaskObj.type, 
+                    username: uName, firstName: fName, lastName: lName, fullName: fullName, generatedEmail: genMail, password: pass, 
+                    fbUid: fbUid, secret2fa: secret, cookie: cookie, recoveryMail: recMail, submittedBy: currentUser.email, 
+                    uid: currentUser.uid, price: activeTaskObj.price, status: "pending", archived: false, batchId: batchId, time: new Date().toISOString() 
+                }); 
+                
                 await updateDoc(doc(db, "users", currentUser.uid), { pending: increment(1) }); 
                 
-                localStorage.removeItem('ongoingTask'); // Instant fast clear for next open
+                localStorage.removeItem('ongoingTask'); 
                 
                 let overlay = document.getElementById('success-anim-overlay');
                 overlay.style.display = 'flex';
@@ -903,6 +918,7 @@
                 }, 800);
             });
         };
+
 
         window.startTgTask = (link, btn) => { if(!link) return showToast("No link available", "error"); window.open(link, '_blank'); let tgBtn = btn.nextElementSibling; if(tgBtn && tgBtn.id.startsWith('tg-verify-btn')) tgBtn.style.display = 'flex'; };
         window.verifyTgTask = async (taskId, price, btn) => { await withLoading(btn, async () => { await new Promise(r => setTimeout(r, 2000)); await updateDoc(doc(db, "users", currentUser.uid), { tgJoined: true, earned: increment(price) }); showToast("Verification Success! Reward added.", "success"); btn.parentElement.style.display = 'none'; }); };
@@ -1366,14 +1382,21 @@
             showToast("Downloaded!", "success");
         };
 
-        window.lockAdminSheet = async (tId, bId) => {
+                window.lockAdminSheet = async (tId, bId) => {
             if(!confirm("Are you sure? This will lock this sheet and create a new one for upcoming tasks.")) return;
-            let currentBatches = globalTaskConfig.taskBatches || {};
+            
+            // 🔴 Server থেকে strict data এনে শিট লক করবে
+            let configSnap = await getDoc(doc(db, "settings", "config"));
+            let latestConfig = configSnap.exists() ? configSnap.data() : {};
+            let currentBatches = latestConfig.taskBatches || {};
+            
             let nextBatch = (currentBatches[tId] || 1) + 1;
             currentBatches[tId] = nextBatch;
+            
             await setDoc(doc(db, "settings", "config"), { taskBatches: currentBatches }, {merge:true});
             showToast("Sheet Locked & New Sheet Created!", "success");
         };
+
 
         window.resetToday = async (btn) => { 
             if(!confirm("Are you sure? This will save all active files to history and shift Pending to Processing.")) return; 
